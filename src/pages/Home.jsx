@@ -41,160 +41,138 @@ const Home = () => {
     ];
 
     return (
-        <div className="space-y-0 pb-16">
-            {/* Hero Section */}
-            <section className="relative bg-white overflow-hidden pt-16 pb-20 lg:pt-24 lg:pb-28">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-                    <div className="lg:grid lg:grid-cols-12 lg:gap-8 text-center lg:text-left">
-                        <div className="lg:col-span-12 xl:col-span-7 lg:text-left">
-                            <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl lg:text-6xl">
-                                <span className="block">Innovate, Create,</span>
-                                <span className="block text-blue-600 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
-                                    Lead the Future
-                                </span>
-                            </h1>
-                            <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg md:mt-5 md:text-xl lg:mx-0 font-light">
-                                The official platform for the IT Department's Innovation & Events. Join us in shaping the future of technology through IIC, EMDC, and the IT Association.
-                            </p>
-                            <div className="mt-8 sm:max-w-lg sm:mx-auto sm:text-center lg:text-left lg:mx-0">
-                                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                                    <Link to="/events">
-                                        <Button size="lg" className="w-full sm:w-auto shadow-lg shadow-blue-500/30">
-                                            Explore Events
-                                        </Button>
-                                    </Link>
-                                    <Link to="/about">
-                                        <Button variant="secondary" size="lg" className="w-full sm:w-auto hover:bg-gray-50">
-                                            Learn More
-                                        </Button>
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
+        <div className="bg-gray-50/50">
+            {/* Official Hero Section */}
+            <section className="relative h-[500px] flex items-center justify-center overflow-hidden bg-slate-900 border-b-4 border-yellow-500">
+                {/* Background Image & Overlay */}
+                <div className="absolute inset-0 z-0">
+                    <img
+                        src="public/images/Kec.jpeg"
+                        alt="Background"
+                        className="w-full h-full object-cover opacity-30"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-slate-900/90 mix-blend-multiply"></div>
+                </div>
+
+
+                {/* Content */}
+                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+                    <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tight drop-shadow-lg uppercase font-serif">
+                        Department of Information Technology
+                    </h1>
+                    <p className="text-xl md:text-2xl text-gray-200 font-light max-w-3xl mx-auto tracking-wide border-t border-b border-gray-600 py-4">
+                        Excellence in Innovation, Entrepreneurship, and Technology
+                    </p>
+                    <div className="flex justify-center gap-4 mt-8">
+                        <Link to="/events">
+                            <Button className="bg-yellow-500 hover:bg-yellow-400 text-blue-900 font-bold px-8 py-3 rounded shadow-lg shadow-yellow-500/20 border-none uppercase tracking-wide">
+                                Explore Events
+                            </Button>
+                        </Link>
+                        <Link to="/about">
+                            <Button variant="outline" className="border-2 border-white text-white hover:bg-white/10 px-8 py-3 rounded font-bold uppercase tracking-wide bg-transparent">
+                                Discover More
+                            </Button>
+                        </Link>
                     </div>
-                    {/* Decorative Elements - subtle background patterns could go here */}
-                    <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-blue-50 rounded-full blur-3xl opacity-50 -z-10 pointer-events-none"></div>
-                    <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-indigo-50 rounded-full blur-3xl opacity-50 -z-10 pointer-events-none"></div>
                 </div>
             </section>
 
-            {/* About Preview Section */}
-            <section className="py-16 bg-gray-50">
+            {/* Department Pillars (Cards) - Institutional Style */}
+            <section className="py-20 -mt-16 relative z-20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-                            Our Pillars of Excellence
-                        </h2>
-                        <p className="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
-                            Three bodies, one vision: empowering students to achieve greatness.
-                        </p>
-                    </div>
-
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {/* IIC Card */}
-                        <Card className="h-full border-t-4 border-t-blue-500 hover:border-t-blue-600">
-                            <Card.Content className="text-center">
-                                <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6 transform rotate-3 transition-transform group-hover:rotate-6">
-                                    <Lightbulb className="w-8 h-8 text-blue-600" />
-                                </div>
-                                <h3 className="text-xl font-bold text-gray-900 mb-2">IIC</h3>
-                                <p className="text-gray-500 mb-6">
-                                    Institution's Innovation Council fosters the culture of innovation and startups among students.
-                                </p>
-                                <Link to="/about#iic" className="text-blue-600 font-medium hover:text-blue-700 inline-flex items-center">
-                                    Learn more <ArrowRight className="ml-1 w-4 h-4" />
-                                </Link>
-                            </Card.Content>
-                        </Card>
+                        <div className="bg-white rounded-lg shadow-xl border border-gray-100 p-8 transform hover:-translate-y-2 transition-all duration-300">
+                            <div className="w-14 h-14 bg-blue-900 rounded-lg flex items-center justify-center mb-6 shadow-lg shadow-blue-900/20">
+                                <Lightbulb className="w-7 h-7 text-white" />
+                            </div>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-3 tracking-tight">IIC</h3>
+                            <div className="h-1 w-12 bg-yellow-500 mb-4"></div>
+                            <p className="text-gray-600 mb-6 leading-relaxed text-sm">
+                                Institution's Innovation Council fosters the culture of innovation and startups among students, creating a vibrant ecosystem.
+                            </p>
+                            <Link to="/about#iic" className="inline-flex items-center text-blue-900 font-semibold text-sm hover:underline tracking-wide uppercase">
+                                View Details <ArrowRight className="ml-2 w-4 h-4" />
+                            </Link>
+                        </div>
 
                         {/* EMDC Card */}
-                        <Card className="h-full border-t-4 border-t-purple-500 hover:border-t-purple-600">
-                            <Card.Content className="text-center">
-                                <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-6 transform -rotate-3 transition-transform group-hover:-rotate-6">
-                                    <TrendingUp className="w-8 h-8 text-purple-600" />
-                                </div>
-                                <h3 className="text-xl font-bold text-gray-900 mb-2">EMDC</h3>
-                                <p className="text-gray-500 mb-6">
-                                    Entrepreneurship & Management Development Centre nurtures entrepreneurial skills and management acumen.
-                                </p>
-                                <Link to="/about#emdc" className="text-purple-600 font-medium hover:text-purple-700 inline-flex items-center">
-                                    Learn more <ArrowRight className="ml-1 w-4 h-4" />
-                                </Link>
-                            </Card.Content>
-                        </Card>
+                        <div className="bg-white rounded-lg shadow-xl border border-gray-100 p-8 transform hover:-translate-y-2 transition-all duration-300">
+                            <div className="w-14 h-14 bg-slate-800 rounded-lg flex items-center justify-center mb-6 shadow-lg shadow-slate-800/20">
+                                <TrendingUp className="w-7 h-7 text-white" />
+                            </div>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-3 tracking-tight">EMDC</h3>
+                            <div className="h-1 w-12 bg-yellow-500 mb-4"></div>
+                            <p className="text-gray-600 mb-6 leading-relaxed text-sm">
+                                Entrepreneurship & Management Development Centre nurtures entrepreneurial skills and management acumen for future leaders.
+                            </p>
+                            <Link to="/about#emdc" className="inline-flex items-center text-slate-800 font-semibold text-sm hover:underline tracking-wide uppercase">
+                                View Details <ArrowRight className="ml-2 w-4 h-4" />
+                            </Link>
+                        </div>
 
                         {/* Association Card */}
-                        <Card className="h-full border-t-4 border-t-indigo-500 hover:border-t-indigo-600">
-                            <Card.Content className="text-center">
-                                <div className="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-6 transform rotate-3 transition-transform group-hover:rotate-6">
-                                    <Users className="w-8 h-8 text-indigo-600" />
-                                </div>
-                                <h3 className="text-xl font-bold text-gray-900 mb-2">IT Association</h3>
-                                <p className="text-gray-500 mb-6">
-                                    The student body representing the IT department, organizing technical and non-technical events.
-                                </p>
-                                <Link to="/about#association" className="text-indigo-600 font-medium hover:text-indigo-700 inline-flex items-center">
-                                    Learn more <ArrowRight className="ml-1 w-4 h-4" />
-                                </Link>
-                            </Card.Content>
-                        </Card>
+                        <div className="bg-white rounded-lg shadow-xl border border-gray-100 p-8 transform hover:-translate-y-2 transition-all duration-300">
+                            <div className="w-14 h-14 bg-blue-700 rounded-lg flex items-center justify-center mb-6 shadow-lg shadow-blue-700/20">
+                                <Users className="w-7 h-7 text-white" />
+                            </div>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-3 tracking-tight">IT Association</h3>
+                            <div className="h-1 w-12 bg-yellow-500 mb-4"></div>
+                            <p className="text-gray-600 mb-6 leading-relaxed text-sm">
+                                The official student body representing the IT department, organizing technical symposiums, workshops, and student activities.
+                            </p>
+                            <Link to="/about#association" className="inline-flex items-center text-blue-700 font-semibold text-sm hover:underline tracking-wide uppercase">
+                                View Details <ArrowRight className="ml-2 w-4 h-4" />
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            {/* Upcoming Events Section */}
-            <section className="py-16 bg-white">
+            {/* Upcoming Events Section - Cleaner List View */}
+            <section className="py-16 bg-white border-t border-gray-100">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-end mb-10">
-                        <div>
-                            <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-                                Upcoming Events
-                            </h2>
-                            <p className="mt-2 text-xl text-gray-500">
-                                Don't miss out on what's happening.
-                            </p>
-                        </div>
-                        <Link to="/events" className="hidden sm:flex items-center text-blue-600 font-medium hover:text-blue-700">
-                            View all events <ArrowRight className="ml-2 w-5 h-5" />
+                    <div className="flex justify-between items-center mb-12 border-b border-gray-200 pb-4">
+                        <h2 className="text-3xl font-bold text-slate-900 tracking-tight uppercase">
+                            Upcoming Activities
+                        </h2>
+                        <Link to="/events" className="flex items-center text-blue-900 font-semibold hover:text-blue-700 uppercase text-sm tracking-wide">
+                            All Events <ArrowRight className="ml-2 w-5 h-5" />
                         </Link>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                         {upcomingEvents.map(event => (
                             <EventCard key={event.id} event={event} />
                         ))}
                     </div>
-
-                    <div className="mt-10 text-center sm:hidden">
-                        <Link to="/events" className="text-blue-600 font-medium hover:text-blue-700">
-                            View all events &rarr;
-                        </Link>
-                    </div>
                 </div>
             </section>
 
-            {/* Impact Counters Section */}
-            <section className="py-20 bg-slate-900 text-white relative overflow-hidden">
-                {/* Background Overlay */}
-                <div className="absolute inset-0 bg-blue-900/20"></div>
-
+            {/* Impact Counters Section - Official Dark */}
+            <section className="py-20 bg-slate-900 text-white relative overflow-hidden border-t-4 border-yellow-500">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl font-bold uppercase tracking-wider mb-2">Department Impact</h2>
+                        <div className="h-1 w-20 bg-blue-500 mx-auto"></div>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-slate-700">
                         <div className="p-4">
-                            <div className="text-4xl md:text-5xl font-extrabold text-blue-400 mb-2">50+</div>
-                            <div className="text-gray-400 font-medium">Events Conducted</div>
+                            <div className="text-5xl font-bold text-white mb-2 font-mono">50+</div>
+                            <div className="text-blue-300 text-sm font-medium uppercase tracking-widest">Events Conducted</div>
                         </div>
                         <div className="p-4">
-                            <div className="text-4xl md:text-5xl font-extrabold text-purple-400 mb-2">1000+</div>
-                            <div className="text-gray-400 font-medium">Participants</div>
+                            <div className="text-5xl font-bold text-white mb-2 font-mono">1K+</div>
+                            <div className="text-blue-300 text-sm font-medium uppercase tracking-widest">Participants</div>
                         </div>
                         <div className="p-4">
-                            <div className="text-4xl md:text-5xl font-extrabold text-indigo-400 mb-2">20+</div>
-                            <div className="text-gray-400 font-medium">Startups Incubated</div>
+                            <div className="text-5xl font-bold text-white mb-2 font-mono">20+</div>
+                            <div className="text-blue-300 text-sm font-medium uppercase tracking-widest">Startups</div>
                         </div>
                         <div className="p-4">
-                            <div className="text-4xl md:text-5xl font-extrabold text-teal-400 mb-2">15+</div>
-                            <div className="text-gray-400 font-medium">Industry Partners</div>
+                            <div className="text-5xl font-bold text-white mb-2 font-mono">15+</div>
+                            <div className="text-blue-300 text-sm font-medium uppercase tracking-widest">Partners</div>
                         </div>
                     </div>
                 </div>

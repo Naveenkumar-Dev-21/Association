@@ -11,7 +11,7 @@ const MEMBERS_DATA = [
         role: "President",
         year: "IV Year",
         club: "IIC",
-        image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400",
+        image: "public/images/kongu logo2.png",
     },
     {
         id: 2,
@@ -85,8 +85,8 @@ const Members = () => {
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
                                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${activeTab === tab
-                                        ? 'bg-blue-600 text-white'
-                                        : 'text-gray-600 hover:bg-gray-100'
+                                    ? 'bg-blue-600 text-white'
+                                    : 'text-gray-600 hover:bg-gray-100'
                                     }`}
                             >
                                 {tab}
