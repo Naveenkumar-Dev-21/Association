@@ -28,8 +28,7 @@ const Profile = () => {
   const [profileData, setProfileData] = useState({
     name: '',
     email: '',
-    clubName: '',
-    department: '',
+    cellsAndAssociation: '',
     role: '',
     lastLogin: ''
   });
@@ -45,8 +44,7 @@ const Profile = () => {
       setProfileData({
         name: admin.name || '',
         email: admin.email || '',
-        clubName: admin.clubName || '',
-        department: admin.department || '',
+        cellsAndAssociation: admin.cellsAndAssociation || '',
         role: admin.role || '',
         lastLogin: admin.lastLogin || ''
       });
@@ -77,8 +75,7 @@ const Profile = () => {
       const response = await api.put('/profile', {
         name: profileData.name,
         email: profileData.email,
-        clubName: profileData.clubName,
-        department: profileData.department
+        cellsAndAssociation: profileData.cellsAndAssociation
       });
 
       toast.success('Profile updated successfully!');
@@ -142,7 +139,7 @@ const Profile = () => {
         name: admin.name || '',
         email: admin.email || '',
         clubName: admin.clubName || '',
-        department: admin.department || '',
+        department: admin.cellsAndAssociation || '',
         role: admin.role || '',
         lastLogin: admin.lastLogin || ''
       });
@@ -262,30 +259,11 @@ const Profile = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Club Name
-                      </label>
-                      <div className="relative">
-                        <Building className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
-                        <input
-                          type="text"
-                          name="clubName"
-                          value={profileData.clubName}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                          className={`w-full pl-10 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                            isEditing ? 'border-gray-300' : 'border-gray-200 bg-gray-50'
-                          }`}
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Department
+                        Cells and Association
                       </label>
                       <select
-                        name="department"
-                        value={profileData.department}
+                        name="cellsAndAssociation"
+                        value={profileData.cellsAndAssociation}
                         onChange={handleProfileChange}
                         disabled={!isEditing}
                         className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
@@ -295,7 +273,6 @@ const Profile = () => {
                         <option value="IT">IT</option>
                         <option value="IIC">IIC</option>
                         <option value="EMDC">EMDC</option>
-                        <option value="ALL">ALL</option>
                       </select>
                     </div>
 

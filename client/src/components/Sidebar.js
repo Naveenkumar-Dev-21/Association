@@ -34,8 +34,8 @@ const Sidebar = () => {
       icon: Calendar,
       hasSubmenu: true,
       submenu: [
-        { title: 'IIC / EMDC', path: '/events?department=IIC' },
-        { title: 'IT', path: '/events?department=IT' },
+        { title: 'IIC / EMDC', path: '/events?cellsAndAssociation=IIC' },
+        { title: 'IT', path: '/events?cellsAndAssociation=IT' },
       ],
     },
     {
@@ -166,7 +166,7 @@ const Sidebar = () => {
               </div>
               <div className="ml-3">
                 <p className="text-sm font-medium text-gray-800">{admin.name}</p>
-                <p className="text-xs text-gray-500">{admin.clubName}</p>
+                <p className="text-xs text-gray-500">{admin.cellsAndAssociation}</p>
               </div>
             </div>
           </div>

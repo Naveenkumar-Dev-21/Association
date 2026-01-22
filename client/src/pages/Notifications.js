@@ -35,7 +35,7 @@ const Notifications = () => {
   });
 
   const notificationTypes = ['New Event', 'Event Reminder', 'Registration Closing', 'General'];
-  const targetAudiences = ['All Students', 'IT Department', 'IIC Department', 'EMDC Department'];
+  const targetAudiences = ['All Students', 'IT Cells and Association', 'IIC Cells and Association', 'EMDC Cells and Association'];
 
   useEffect(() => {
     fetchNotifications();

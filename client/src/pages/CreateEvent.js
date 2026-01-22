@@ -29,7 +29,7 @@ const CreateEvent = () => {
       name: '',
       contact: ''
     },
-    department: 'IT',
+    cellsAndAssociation: 'IT',
     
     // Section B - Event Info & Usability
     posterImage: null,
@@ -44,7 +44,7 @@ const CreateEvent = () => {
   });
 
   const eventTypes = ['Hackathon', 'Workshop', 'Inter College', 'Intra College', 'Fun Event'];
-  const departments = ['IT', 'IIC', 'EMDC'];
+  const cellsAndAssociations = ['IT', 'IIC', 'EMDC'];
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -327,16 +327,16 @@ const CreateEvent = () => {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Department *
+            Cells and Association *
           </label>
           <select
-            name="department"
-            value={formData.department}
+            name="cellsAndAssociation"
+            value={formData.cellsAndAssociation}
             onChange={handleInputChange}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            {departments.map((dept) => (
-              <option key={dept} value={dept}>{dept}</option>
+            {cellsAndAssociations.map((cell) => (
+              <option key={cell} value={cell}>{cell}</option>
             ))}
           </select>
         </div>

@@ -24,7 +24,7 @@ const Events = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [departmentFilter, setDepartmentFilter] = useState(searchParams.get('department') || 'all');
+  const [cellsAndAssociationFilter, setCellsAndAssociationFilter] = useState(searchParams.get('cellsAndAssociation') || 'all');
   const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const Events = () => {
 
   useEffect(() => {
     filterEvents();
-  }, [events, searchTerm, statusFilter, departmentFilter]);
+  }, [events, searchTerm, statusFilter, cellsAndAssociationFilter]);
 
   const fetchEvents = async () => {
     try {
@@ -62,9 +62,9 @@ const Events = () => {
       filtered = filtered.filter(event => event.status === statusFilter);
     }
 
-    // Filter by department
-    if (departmentFilter !== 'all') {
-      filtered = filtered.filter(event => event.department === departmentFilter);
+    // Filter by cells and association
+    if (cellsAndAssociationFilter !== 'all') {
+      filtered = filtered.filter(event => event.cellsAndAssociation === cellsAndAssociationFilter);
     }
 
     setFilteredEvents(filtered);
@@ -140,13 +140,13 @@ const Events = () => {
                   />
                 </div>
 
-                {/* Department Filter */}
+                {/* Cells and Association Filter */}
                 <select
                   className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  value={departmentFilter}
-                  onChange={(e) => setDepartmentFilter(e.target.value)}
+                  value={cellsAndAssociationFilter}
+                  onChange={(e) => setCellsAndAssociationFilter(e.target.value)}
                 >
-                  <option value="all">All Departments</option>
+                  <option value="all">All Cells and Associations</option>
                   <option value="IT">IT</option>
                   <option value="IIC">IIC</option>
                   <option value="EMDC">EMDC</option>
@@ -257,7 +257,7 @@ const Events = () => {
                       </button>
                     </div>
                     <span className="text-xs text-gray-500">
-                      {event.department}
+                      {event.cellsAndAssociation}
                     </span>
                   </div>
                 </div>
@@ -270,7 +270,7 @@ const Events = () => {
               <Calendar className="h-16 w-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">No events found</h3>
               <p className="text-gray-600 mb-6">
-                {searchTerm || statusFilter !== 'all' || departmentFilter !== 'all'
+                {searchTerm || statusFilter !== 'all' || cellsAndAssociationFilter !== 'all'
                   ? 'Try adjusting your filters or search terms'
                   : 'Get started by creating your first event'}
               </p>

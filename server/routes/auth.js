@@ -20,8 +20,7 @@ router.post('/register', [
   body('name').trim().notEmpty().withMessage('Name is required'),
   body('email').isEmail().normalizeEmail().withMessage('Please provide a valid email'),
   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
-  body('clubName').trim().notEmpty().withMessage('Club name is required'),
-  body('department').isIn(['IT', 'IIC', 'EMDC', 'ALL']).withMessage('Invalid department')
+  body('cellsAndAssociation').isIn(['IT', 'IIC', 'EMDC']).withMessage('Invalid Cells and Association')
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -33,7 +32,7 @@ router.post('/register', [
       });
     }
 
-    const { name, email, password, clubName, department } = req.body;
+    const { name, email, password, cellsAndAssociation } = req.body;
 
     // Check if admin already exists
     const existingAdmin = await Admin.findOne({ email });
@@ -49,8 +48,7 @@ router.post('/register', [
       name,
       email,
       password,
-      clubName,
-      department
+      cellsAndAssociation
     });
 
     await admin.save();

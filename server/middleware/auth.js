@@ -33,3 +33,4 @@ const auth = async (req, res, next) => {
 };
 
 module.exports = auth;
+// Cells and association

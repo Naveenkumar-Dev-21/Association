@@ -55,15 +55,15 @@ const upload = multer({
 });
 
 // @route   GET /api/events
-// @desc    Get all events for a department
+// @desc    Get all events for a cells and association
 // @access  Private
 router.get('/', auth, async (req, res) => {
   try {
-    const { department, status } = req.query;
+    const { cellsAndAssociation, status } = req.query;
     const filter = { createdBy: req.admin._id };
     
-    if (department && department !== 'ALL') {
-      filter.department = department;
+    if (cellsAndAssociation && cellsAndAssociation !== 'ALL') {
+      filter.cellsAndAssociation = cellsAndAssociation;
     }
     
     if (status) {
@@ -139,7 +139,7 @@ router.post('/', auth, upload.fields([
   body('venue').if(body('mode').equals('Offline')).notEmpty().withMessage('Venue is required for offline events'),
   body('eventCoordinator.name').trim().notEmpty().withMessage('Coordinator name is required'),
   body('eventCoordinator.contact').trim().notEmpty().withMessage('Coordinator contact is required'),
-  body('department').isIn(['IT', 'IIC', 'EMDC']).withMessage('Invalid department'),
+  body('cellsAndAssociation').isIn(['IT', 'IIC', 'EMDC']).withMessage('Invalid Cells and Association'),
   body('description').trim().notEmpty().withMessage('Description is required'),
   body('rules').trim().notEmpty().withMessage('Rules are required'),
   body('registrationLink').isURL().withMessage('Valid registration link is required'),

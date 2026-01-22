@@ -25,15 +25,11 @@ const adminSchema = new mongoose.Schema({
     enum: ['admin', 'super_admin'],
     default: 'admin'
   },
-  clubName: {
+  cellsAndAssociation: {
     type: String,
-    required: [true, 'Club name is required'],
+    required: [true, 'Cells and Association is required'],
+    enum: ['IT', 'IIC', 'EMDC'],
     trim: true
-  },
-  department: {
-    type: String,
-    enum: ['IT', 'IIC', 'EMDC', 'ALL'],
-    default: 'ALL'
   },
   isActive: {
     type: Boolean,

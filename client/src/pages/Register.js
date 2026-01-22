@@ -10,8 +10,7 @@ const Register = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    clubName: '',
-    department: 'IT',
+    cellsAndAssociation: 'IT',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -42,8 +41,7 @@ const Register = () => {
       name: formData.name,
       email: formData.email,
       password: formData.password,
-      clubName: formData.clubName,
-      department: formData.department,
+      cellsAndAssociation: formData.cellsAndAssociation,
     });
 
     if (result.success) {
@@ -116,42 +114,20 @@ const Register = () => {
             </div>
 
             <div>
-              <label htmlFor="clubName" className="block text-sm font-medium text-gray-700">
-                Club Name
-              </label>
-              <div className="mt-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Building className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  id="clubName"
-                  name="clubName"
-                  type="text"
-                  required
-                  className="appearance-none relative block w-full pl-10 pr-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                  placeholder="Enter your club name"
-                  value={formData.clubName}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="department" className="block text-sm font-medium text-gray-700">
-                Department
+              <label htmlFor="cellsAndAssociation" className="block text-sm font-medium text-gray-700">
+                Cells and Association
               </label>
               <select
-                id="department"
-                name="department"
+                id="cellsAndAssociation"
+                name="cellsAndAssociation"
                 required
                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                value={formData.department}
+                value={formData.cellsAndAssociation}
                 onChange={handleChange}
               >
                 <option value="IT">IT</option>
                 <option value="IIC">IIC</option>
                 <option value="EMDC">EMDC</option>
-                <option value="ALL">ALL</option>
               </select>
             </div>
 

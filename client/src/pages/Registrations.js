@@ -10,7 +10,6 @@ import {
   Calendar,
   Mail,
   Phone,
-  Building,
   Eye,
   Edit,
   Trash2,
@@ -34,11 +33,9 @@ const Registrations = () => {
     studentName: '',
     studentEmail: '',
     studentPhone: '',
-    studentDepartment: '',
     studentYear: ''
   });
 
-  const departments = ['IT', 'CSE', 'ECE', 'MECH', 'CIVIL', 'EEE'];
   const years = ['1st Year', '2nd Year', '3rd Year', '4th Year'];
 
   useEffect(() => {
@@ -90,7 +87,6 @@ const Registrations = () => {
         studentName: formData.studentName,
         studentEmail: formData.studentEmail,
         studentPhone: formData.studentPhone,
-        studentDepartment: formData.studentDepartment,
         studentYear: formData.studentYear
       });
       
@@ -101,7 +97,6 @@ const Registrations = () => {
         studentName: '',
         studentEmail: '',
         studentPhone: '',
-        studentDepartment: '',
         studentYear: ''
       });
       fetchRegistrations();
@@ -294,24 +289,6 @@ const Registrations = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Department *
-                  </label>
-                  <select
-                    name="studentDepartment"
-                    value={formData.studentDepartment}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">Select department</option>
-                    {departments.map((dept) => (
-                      <option key={dept} value={dept}>{dept}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Year *
                   </label>
                   <select
@@ -405,9 +382,6 @@ const Registrations = () => {
                         Contact
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Department
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Event
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -443,12 +417,6 @@ const Registrations = () => {
                               <Phone className="h-4 w-4 mr-1 text-gray-400" />
                               {registration.studentPhone}
                             </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <Building className="h-4 w-4 mr-1 text-gray-400" />
-                            <span className="text-sm text-gray-900">{registration.studentDepartment}</span>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">

@@ -49,10 +49,10 @@ const eventSchema = new mongoose.Schema({
       trim: true
     }
   },
-  department: {
+  cellsAndAssociation: {
     type: String,
     enum: ['IT', 'IIC', 'EMDC'],
-    required: [true, 'Department is required']
+    required: [true, 'Cells and Association is required']
   },
   posterImage: {
     type: String,
@@ -110,7 +110,7 @@ const eventSchema = new mongoose.Schema({
 });
 
 // Index for better query performance
-eventSchema.index({ department: 1, status: 1 });
+eventSchema.index({ cellsAndAssociation: 1, status: 1 });
 eventSchema.index({ eventDate: 1 });
 eventSchema.index({ createdBy: 1 });
 
