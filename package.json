@@ -1,0 +1,19 @@
+{
+  "name": "college-event-admin",
+  "version": "1.0.0",
+  "description": "College Club Event Notification & Management System - Admin Panel",
+  "main": "server/index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "client": "cd client && npm start",
+    "server": "cd server && npm run dev",
+    "build": "cd client && npm run build",
+    "install-deps": "npm install && cd client && npm install && cd ../server && npm install"
+  },
+  "keywords": ["college", "events", "admin", "management"],
+  "author": "College Admin Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
