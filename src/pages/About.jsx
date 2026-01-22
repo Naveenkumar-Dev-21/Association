@@ -165,7 +165,9 @@ const About = () => {
                                         <tr><td className="px-6 py-4 text-sm font-medium text-gray-500 bg-gray-50">Established</td><td className="px-6 py-4 text-sm font-semibold text-gray-900">1998</td></tr>
                                         <tr><td className="px-6 py-4 text-sm font-medium text-gray-500 bg-gray-50">Program</td><td className="px-6 py-4 text-sm text-gray-900">B.Tech - Information Technology</td></tr>
                                         <tr><td className="px-6 py-4 text-sm font-medium text-gray-500 bg-gray-50">Accreditation</td><td className="px-6 py-4 text-sm text-gray-900">NBA Accredited (Tier-1)</td></tr>
-                                        <tr><td className="px-6 py-4 text-sm font-medium text-gray-500 bg-gray-50">Intake</td><td className="px-6 py-4 text-sm text-gray-900">120 Seats</td></tr>
+                                        <tr><td className="px-6 py-4 text-sm font-medium text-gray-500 bg-gray-50">Intake</td><td className="px-6 py-4 text-sm text-gray-900">180 Seats</td></tr>
+                                        <tr><td className="px-6 py-4 text-sm font-medium text-gray-500 bg-gray-50">HOD</td><td className="px-6 py-4 text-sm text-gray-900">Dr.S.Anandamurugan</td></tr>
+
                                     </tbody>
                                 </table>
                             </div>

@@ -47,15 +47,15 @@ const Footer = () => {
                         <ul className="space-y-3 text-sm">
                             <li className="flex items-start">
                                 <MapPin size={18} className="mr-2 flex-shrink-0 text-blue-500" />
-                                <span>Department of Information Technology, Some College Name, City, State - 123456</span>
+                                <span>Department of Information Technology, Kongu Engineering College, Perundurai,Erode,Tamil Nadu - 638060</span>
                             </li>
                             <li className="flex items-center">
                                 <Mail size={18} className="mr-2 flex-shrink-0 text-blue-500" />
-                                <span>contact@it-innovation.edu</span>
+                                <span>keciipc@kongu.ac.in </span>
                             </li>
                             <li className="flex items-center">
                                 <Phone size={18} className="mr-2 flex-shrink-0 text-blue-500" />
-                                <span>+91 123 456 7890</span>
+                                <span>9965277765</span>
                             </li>
                         </ul>
                     </div>
