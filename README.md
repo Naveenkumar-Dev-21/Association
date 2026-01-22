@@ -5,14 +5,14 @@
 - NaveenKumar
 - Mohammed Yunus
 - Koushikaashree
-- Naveena S
+- Jeevasruthi S
 
 ** Work Split up**
 
 - NaveenKumar - Admin Works
 - Mohammed Yunus - Frontend Works (User)
 - Koushikaashree - Frontend Works (Admin)
-- Naveena S - Chatbot and Notification Management
+- Jeevasruthi S - Chatbot and Notification Management
 
 ** Tech Stack **
 
