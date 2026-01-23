@@ -16,7 +16,7 @@ const Home = () => {
             venue: "Main Auditorium",
             category: "IIC",
             type: "Hackathon",
-            image: "https://images.unsplash.com/photo-1504384308090-c54be3855833?auto=format&fit=crop&q=80&w=1000",
+            image: "https://placehold.co/1000x600/1e293b/white?text=Innovation+Hackathon",
         },
         {
             id: 2,
@@ -26,7 +26,7 @@ const Home = () => {
             venue: "Seminar Hall 1",
             category: "EMDC",
             type: "Seminar",
-            image: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&q=80&w=1000",
+            image: "https://placehold.co/1000x600/0f172a/white?text=Entrepreneurship+Summit",
         },
         {
             id: 3,
@@ -36,7 +36,7 @@ const Home = () => {
             venue: "Online",
             category: "Association",
             type: "Workshop",
-            image: "https://images.unsplash.com/photo-1591115765373-5207764f72e7?auto=format&fit=crop&q=80&w=1000",
+            image: "https://placehold.co/1000x600/1e3a8a/white?text=AI+Tech+Talk",
         },
     ];
 

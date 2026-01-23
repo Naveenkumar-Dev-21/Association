@@ -14,7 +14,7 @@ const EVENTS_DATA = [
         category: "IIC",
         type: "Hackathon",
         status: "Upcoming",
-        image: "https://images.unsplash.com/photo-1504384308090-c54be3855833?auto=format&fit=crop&q=80&w=1000",
+        image: "https://placehold.co/1000x600/1e293b/white?text=Innovation+Hackathon",
     },
     {
         id: 2,
@@ -25,7 +25,7 @@ const EVENTS_DATA = [
         category: "EMDC",
         type: "Seminar",
         status: "Upcoming",
-        image: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&q=80&w=1000",
+        image: "https://placehold.co/1000x600/0f172a/white?text=Entrepreneurship+Summit",
     },
     {
         id: 3,
@@ -36,7 +36,7 @@ const EVENTS_DATA = [
         category: "Association",
         type: "Workshop",
         status: "Upcoming",
-        image: "https://images.unsplash.com/photo-1591115765373-5207764f72e7?auto=format&fit=crop&q=80&w=1000",
+        image: "https://placehold.co/1000x600/1e3a8a/white?text=AI+Tech+Talk",
     },
     {
         id: 4,
@@ -47,7 +47,7 @@ const EVENTS_DATA = [
         category: "Association",
         type: "Workshop",
         status: "Open",
-        image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=1000",
+        image: "https://placehold.co/1000x600/0369a1/white?text=App+Dev+Bootcamp",
     },
     {
         id: 5,
@@ -58,7 +58,7 @@ const EVENTS_DATA = [
         category: "IIC",
         type: "Competition",
         status: "Open",
-        image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=1000",
+        image: "https://placehold.co/1000x600/0d9488/white?text=Idea+Pitching",
     },
     {
         id: 6,
@@ -69,7 +69,7 @@ const EVENTS_DATA = [
         category: "EMDC",
         type: "Seminar",
         status: "Upcoming",
-        image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=1000",
+        image: "https://placehold.co/1000x600/334155/white?text=Startup+Legal",
     },
 ];
 

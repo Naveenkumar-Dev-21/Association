@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
+import ClickSpark from '../ui/ClickSpark';
 
 const Layout = ({ children }) => {
     // Sidebar states: 'hidden' (mobile), 'collapsed' (icons), 'expanded' (full)
@@ -44,8 +45,16 @@ const Layout = ({ children }) => {
                     ${sidebarState === 'expanded' ? 'md:ml-72' :
                             sidebarState === 'collapsed' ? 'md:ml-20' : 'ml-0'}`}
                 >
-                    {children}
-                    <Footer />
+                    <ClickSpark
+                        sparkColor="#60a5fa"
+                        sparkSize={10}
+                        sparkRadius={18}
+                        sparkCount={8}
+                        duration={400}
+                    >
+                        {children}
+                        <Footer />
+                    </ClickSpark>
                 </main>
             </div>
         </div>
