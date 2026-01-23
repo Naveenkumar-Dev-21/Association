@@ -28,6 +28,7 @@ const Registrations = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [showAddForm, setShowAddForm] = useState(false);
+  const [selectedRegistrations, setSelectedRegistrations] = useState([]);
   const [formData, setFormData] = useState({
     eventId: '',
     studentName: '',
@@ -63,6 +64,7 @@ const Registrations = () => {
       const url = eventId ? `/registrations/event/${eventId}` : '/registrations';
       const response = await api.get(url);
       setRegistrations(response.data.data.registrations);
+      setSelectedRegistrations([]); // Clear selections when data changes
     } catch (error) {
       console.error('Error fetching registrations:', error);
     } finally {
@@ -99,6 +101,7 @@ const Registrations = () => {
         studentPhone: '',
         studentYear: ''
       });
+      setSelectedRegistrations([]);
       fetchRegistrations();
     } catch (error) {
       console.error('Error adding registration:', error);
@@ -126,6 +129,41 @@ const Registrations = () => {
       } catch (error) {
         console.error('Error deleting registration:', error);
         toast.error(error.response?.data?.message || 'Failed to delete registration');
+      }
+    }
+  };
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedRegistrations(filteredRegistrations.map(reg => reg._id));
+    } else {
+      setSelectedRegistrations([]);
+    }
+  };
+
+  const handleSelectRegistration = (registrationId) => {
+    setSelectedRegistrations(prev =>
+      prev.includes(registrationId)
+        ? prev.filter(id => id !== registrationId)
+        : [...prev, registrationId]
+    );
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedRegistrations.length === 0) {
+      toast.error('Please select registrations to delete');
+      return;
+    }
+    
+    if (window.confirm(`Are you sure you want to delete ${selectedRegistrations.length} registration(s)?`)) {
+      try {
+        await Promise.all(selectedRegistrations.map(id => api.delete(`/registrations/${id}`)));
+        toast.success(`${selectedRegistrations.length} registration(s) deleted successfully!`);
+        setSelectedRegistrations([]);
+        fetchRegistrations();
+      } catch (error) {
+        console.error('Error deleting registrations:', error);
+        toast.error('Failed to delete some registrations');
       }
     }
   };
@@ -205,6 +243,15 @@ const Registrations = () => {
                 <Download className="h-4 w-4 mr-2" />
                 Export CSV
               </button>
+              {selectedRegistrations.length > 0 && (
+                <button
+                  onClick={handleBulkDelete}
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete Selected ({selectedRegistrations.length})
+                </button>
+              )}
               <button
                 onClick={() => setShowAddForm(!showAddForm)}
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
@@ -376,6 +423,14 @@ const Registrations = () => {
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <input
+                          type="checkbox"
+                          checked={selectedRegistrations.length === filteredRegistrations.length && filteredRegistrations.length > 0}
+                          onChange={handleSelectAll}
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        />
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Student
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -395,6 +450,14 @@ const Registrations = () => {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {filteredRegistrations.map((registration) => (
                       <tr key={registration._id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <input
+                            type="checkbox"
+                            checked={selectedRegistrations.includes(registration._id)}
+                            onChange={() => handleSelectRegistration(registration._id)}
+                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          />
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div>
                             <div className="text-sm font-medium text-gray-900">

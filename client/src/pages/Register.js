@@ -11,6 +11,7 @@ const Register = () => {
     password: '',
     confirmPassword: '',
     cellsAndAssociation: 'IT',
+    acceptTerms: false,
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -20,9 +21,10 @@ const Register = () => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: type === 'checkbox' ? checked : value,
     });
   };
 
@@ -33,6 +35,13 @@ const Register = () => {
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       toast.error('Passwords do not match');
+      setIsLoading(false);
+      return;
+    }
+
+    // Validate terms acceptance
+    if (!formData.acceptTerms) {
+      toast.error('Please accept the Terms and Conditions');
       setIsLoading(false);
       return;
     }
@@ -194,6 +203,23 @@ const Register = () => {
                 </button>
               </div>
             </div>
+          </div>
+
+          <div className="flex items-center">
+            <input
+              id="acceptTerms"
+              name="acceptTerms"
+              type="checkbox"
+              checked={formData.acceptTerms}
+              onChange={handleChange}
+              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <label htmlFor="acceptTerms" className="ml-2 block text-sm text-gray-900">
+              I agree to the{' '}
+              <a href="#" className="text-blue-600 hover:text-blue-500">
+                Terms and Conditions
+              </a>
+            </label>
           </div>
 
           <div>
