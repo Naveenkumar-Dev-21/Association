@@ -6,11 +6,13 @@ const Navbar = ({ toggleSidebar }) => {
         <header className="sticky top-0 z-30 bg-white border-b border-gray-200">
             {/* ================= Institutional Top Strip ================= */}
             <div className="w-full">
+                {/*
                 <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-2">
 
                     <div className="flex items-center gap-4">
 
                         {/* Left: College logo + text */}
+                {/*
                         <div className="flex items-center gap-4">
                             <img
                                 src="/images/kongu logo2.png"
@@ -28,8 +30,10 @@ const Navbar = ({ toggleSidebar }) => {
                             </div>
                         </div>
                     </div>
+                    */}
 
-                    {/* Right: Transform Yourself logo */}
+                {/* Right: Transform Yourself logo */}
+                {/*
                     <div className="flex items-center gap-3">
                         <img
                             src="/images/KECL.jpg"
@@ -38,6 +42,7 @@ const Navbar = ({ toggleSidebar }) => {
                         />
                     </div>
                 </div>
+                */}
 
                 {/* Department Bar with Integrated Toggle - Compact GitHub Style */}
                 <div className="bg-slate-900 text-white py-2.5 px-3 shadow-md">
@@ -54,6 +59,13 @@ const Navbar = ({ toggleSidebar }) => {
                         <span className="text-sm md:text-base font-bold tracking-wider uppercase">
                             Information Technology
                         </span>
+                        <div className="flex items-center gap-3 ml-auto">
+                            <img
+                                src="/images/image-removebg-preview.png"
+                                alt="Transform Yourself"
+                                className="h-10 md:h-12 w-auto object-contain hidden sm:block"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

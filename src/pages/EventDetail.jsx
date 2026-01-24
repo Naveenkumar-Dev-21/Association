@@ -33,7 +33,7 @@ const EventDetail = () => {
         venue: "Main Auditorium, IT Block",
         category: "IIC",
         type: "Hackathon",
-        image: "https://placehold.co/1200x800/1e293b/white?text=Innovation+Hackathon",
+        image: "https://images.unsplash.com/photo-1504384308090-c54be3855833?auto=format&fit=crop&q=80&w=1200",
         registrationDeadline: "March 10, 2024",
         coordinator: {
             name: "Dr. Emily Roberts",

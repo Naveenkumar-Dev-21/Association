@@ -1,21 +1,9 @@
 import { useRef, useEffect, useCallback } from 'react';
 
-/**
- * ClickSpark Component
- * 
- * A canvas-based animation component that creates a "spark" effect on click.
- * Designed to be used as a wrapper or a background layer.
- * 
- * @param {string} sparkColor - Color of the sparks (default: #60a5fa)
- * @param {number} sparkSize - Size of each spark line (default: 10)
- * @param {number} sparkRadius - Distance sparks travel from click (default: 18)
- * @param {number} sparkCount - Number of sparks per click (default: 8)
- * @param {number} duration - Animation duration in ms (default: 400)
- */
 const ClickSpark = ({
-    sparkColor = '#60a5fa',
+    sparkColor = '#fff',
     sparkSize = 10,
-    sparkRadius = 18,
+    sparkRadius = 15,
     sparkCount = 8,
     duration = 400,
     easing = 'ease-out',
@@ -129,6 +117,8 @@ const ClickSpark = ({
         const canvas = canvasRef.current;
         if (!canvas) return;
         const rect = canvas.getBoundingClientRect();
+
+        // Calculate position relative to the canvas/container
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
@@ -145,30 +135,18 @@ const ClickSpark = ({
 
     return (
         <div
-            style={{
-                position: 'relative',
-                width: '100%',
-                height: '100%'
-            }}
+            className="relative w-full min-h-full flex flex-col"
             onClick={handleClick}
         >
+            {children}
             <canvas
                 ref={canvasRef}
+                className="absolute top-0 left-0 w-full h-full pointer-events-none"
                 style={{
-                    width: '100%',
-                    height: '100%',
-                    display: 'block',
                     userSelect: 'none',
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    pointerEvents: 'none',
-                    zIndex: 0
+                    zIndex: 9999
                 }}
             />
-            <div style={{ position: 'relative', zIndex: 1 }}>
-                {children}
-            </div>
         </div>
     );
 };

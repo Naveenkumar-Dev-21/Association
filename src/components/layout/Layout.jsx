@@ -5,27 +5,19 @@ import Footer from './Footer';
 import ClickSpark from '../ui/ClickSpark';
 
 const Layout = ({ children }) => {
-    // Sidebar states: 'hidden' (mobile), 'collapsed' (icons), 'expanded' (full)
-    const [sidebarState, setSidebarState] = useState('collapsed');
+    // Sidebar states: 'hidden' or 'expanded'
+    const [sidebarState, setSidebarState] = useState('hidden');
 
     const toggleSidebar = () => {
-        if (window.innerWidth >= 768) {
-            setSidebarState(prev => prev === 'expanded' ? 'collapsed' : 'expanded');
-        } else {
-            setSidebarState(prev => prev === 'expanded' ? 'hidden' : 'expanded');
-        }
+        setSidebarState(prev => prev === 'expanded' ? 'hidden' : 'expanded');
     };
 
     const closeSidebar = () => {
-        if (window.innerWidth >= 768) {
-            setSidebarState('collapsed');
-        } else {
-            setSidebarState('hidden');
-        }
+        setSidebarState('hidden');
     };
 
     return (
-        <div className="flex flex-col h-screen bg-gray-50 overflow-hidden font-sans">
+        <div className="flex flex-col h-screen bg-gray-50 overflow-hidden font-sans relative">
 
             {/* Top Navbar */}
             <Navbar toggleSidebar={toggleSidebar} sidebarState={sidebarState} />
@@ -40,15 +32,12 @@ const Layout = ({ children }) => {
                 />
 
                 {/* Main Content */}
-                <main
-                    className={`flex-1 overflow-y-auto overflow-x-hidden transition-all duration-300 ease-in-out
-                    ${sidebarState === 'expanded' ? 'md:ml-72' :
-                            sidebarState === 'collapsed' ? 'md:ml-20' : 'ml-0'}`}
-                >
+                <main className="flex-1 overflow-y-auto overflow-x-hidden">
+                    {/* ClickSpark Wrapper */}
                     <ClickSpark
-                        sparkColor="#60a5fa"
+                        sparkColor="#fff"
                         sparkSize={10}
-                        sparkRadius={18}
+                        sparkRadius={15}
                         sparkCount={8}
                         duration={400}
                     >

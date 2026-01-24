@@ -1,27 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
     LayoutDashboard, Info, Users, Calendar, FileText,
     CalendarDays, Target, TrendingUp, FileBarChart,
-    Bell, Lock, ChevronDown, ChevronRight, Rocket
+    Bell, Lock, ChevronDown, ChevronRight, Rocket,
+    X
 } from 'lucide-react';
 
 const Sidebar = ({ sidebarState, closeSidebar }) => {
     const location = useLocation();
     const [expandedMenus, setExpandedMenus] = useState({});
 
-    const toggleSubmenu = (menuName) => {
+    // Close sidebar on route change
+    useEffect(() => {
+        closeSidebar();
+    }, [location.pathname]);
+
+    const toggleSubmenu = (e, menuName) => {
+        e.preventDefault();
+        e.stopPropagation();
         setExpandedMenus(prev => ({
             ...prev,
             [menuName]: !prev[menuName]
         }));
     };
 
-    const isActive = (path) => location.pathname === path;
-
     const menuItems = [
         { name: "Dashboard", icon: LayoutDashboard, path: "/" },
-
         {
             name: "About", icon: Info,
             submenu: [
@@ -31,7 +36,6 @@ const Sidebar = ({ sidebarState, closeSidebar }) => {
                 { name: "About IT Association", path: "/about#association" },
             ]
         },
-
         {
             name: "Members", icon: Users,
             submenu: [
@@ -40,7 +44,6 @@ const Sidebar = ({ sidebarState, closeSidebar }) => {
                 { name: "Association Members", path: "/members/association" },
             ]
         },
-
         {
             name: "Events", icon: Calendar,
             submenu: [
@@ -49,7 +52,6 @@ const Sidebar = ({ sidebarState, closeSidebar }) => {
                 { name: "IT Events", path: "/events/it" },
             ]
         },
-
         {
             name: "Policies", icon: FileText,
             submenu: [
@@ -58,7 +60,6 @@ const Sidebar = ({ sidebarState, closeSidebar }) => {
                 { name: "NISP 2019", path: "/pdfs/nisp2020.pdf", isPdf: true },
             ]
         },
-
         {
             name: "Year Plan", icon: CalendarDays,
             submenu: [
@@ -67,7 +68,6 @@ const Sidebar = ({ sidebarState, closeSidebar }) => {
                 { name: "KEC Year Plan 24-25", path: "/pdfs/year_plan2024-2025.pdf", isPdf: true },
             ]
         },
-
         {
             name: "IIC Activities", icon: Rocket,
             submenu: [
@@ -78,7 +78,6 @@ const Sidebar = ({ sidebarState, closeSidebar }) => {
                 { name: "2020 - 2021", path: "/pdfs/iic_2020_21.pdf", isPdf: true },
                 { name: "2019 - 2020", path: "/pdfs/iic_2019_20.pdf", isPdf: true },
                 { name: "2018 - 2019", path: "/pdfs/iic_2018_19.pdf", isPdf: true },
-
                 {
                     name: "Overall Year",
                     submenu: [
@@ -89,7 +88,6 @@ const Sidebar = ({ sidebarState, closeSidebar }) => {
                 },
             ]
         },
-
         {
             name: "EMDC Activities", icon: TrendingUp,
             submenu: [
@@ -101,7 +99,6 @@ const Sidebar = ({ sidebarState, closeSidebar }) => {
                 { name: "2019 - 2020", path: "/pdfs/EMDC_2019_20.pdf", isPdf: true },
             ]
         },
-
         {
             name: "Spark Fund", icon: Target,
             submenu: [
@@ -110,7 +107,6 @@ const Sidebar = ({ sidebarState, closeSidebar }) => {
                 { name: "Sanctioned Projects", path: "/pdfs/Spark Fund_Project consolidated 261023.pdf", isPdf: true },
             ]
         },
-
         {
             name: "Annual Reports", icon: FileBarChart,
             submenu: [
@@ -121,87 +117,113 @@ const Sidebar = ({ sidebarState, closeSidebar }) => {
                 { name: "2020 - 2021", path: "/pdfs/AnnualReport_2020-21.pdf", isPdf: true },
             ]
         },
-
         { name: "Notifications", icon: Bell, path: "/notifications" },
         { name: "Admin Login", icon: Lock, path: "/admin/login" },
     ];
 
-    const isExpanded = sidebarState === 'expanded';
-    const isHidden = sidebarState === 'hidden';
+    const isOpen = sidebarState === 'expanded';
 
-    // 🔁 Recursive renderer for submenu (supports nested levels)
     const renderSubmenu = (submenu, level = 0) => (
-        <div className="bg-slate-900/60">
-            {submenu.map((item) => {
-                if (item.submenu) {
-                    return (
-                        <div key={item.name}>
-                            <div className="pl-28 pr-6 py-3 text-slate-300 font-semibold">
+        <div className="bg-blue-900/10 border-l border-blue-800/30 ml-12 my-1 rounded-lg overflow-hidden">
+            {submenu.map((item) => (
+                <div key={item.name}>
+                    {item.submenu ? (
+                        <>
+                            <div className="px-4 py-2 text-slate-400 text-xs font-bold uppercase tracking-widest opacity-80 mt-2">
                                 {item.name}
                             </div>
                             {renderSubmenu(item.submenu, level + 1)}
-                        </div>
-                    );
-                }
-
-                if (item.isPdf) {
-                    return (
-                        <a
-                            key={item.name}
-                            href={item.path}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="block pl-28 pr-6 py-3 text-base text-slate-400 hover:bg-slate-800 hover:text-white transition"
-                        >
-                            {item.name}
-                        </a>
-                    );
-                }
-
-                return (
-                    <Link
-                        key={item.name}
-                        to={item.path}
-                        onClick={closeSidebar}
-                        className="block pl-28 pr-6 py-3 text-base text-slate-400 hover:bg-slate-800 hover:text-white transition"
-                    >
-                        {item.name}
-                    </Link>
-                );
-            })}
+                        </>
+                    ) : (
+                        <LinkOrAnchor
+                            item={item}
+                            className={`block px-4 py-2.5 text-slate-300 hover:bg-blue-600/10 hover:text-white transition-colors text-sm ${location.pathname === item.path ? 'text-blue-400 font-medium bg-blue-600/5' : ''}`}
+                            onClick={closeSidebar}
+                        />
+                    )}
+                </div>
+            ))}
         </div>
     );
 
-    return (
-        <aside className={`absolute top-0 left-0 z-40 h-full bg-slate-950 text-slate-300 transition-all duration-300 
-      border-r border-slate-800 overflow-y-auto shadow-2xl
-      ${isHidden ? '-translate-x-full w-80 md:translate-x-0 md:w-24' : ''}
-      ${isExpanded ? 'w-80 translate-x-0' : 'w-24'}`}>
-
-            <div className="py-6">
-                {menuItems.map(item => (
-                    <div key={item.name}>
-                        <button
-                            onClick={() => isExpanded && item.submenu && toggleSubmenu(item.name)}
-                            className={`w-full h-[64px] flex items-center justify-between hover:bg-slate-900 transition px-5`}
-                        >
-                            <div className="flex items-center w-full">
-                                <div className="w-24 flex justify-center">
-                                    <item.icon size={26} className="text-blue-400" />
-                                </div>
-                                {isExpanded && <span className="text-lg font-semibold">{item.name}</span>}
-                            </div>
-
-                            {isExpanded && item.submenu && (
-                                expandedMenus[item.name] ? <ChevronDown size={18} /> : <ChevronRight size={18} />
-                            )}
-                        </button>
-
-                        {isExpanded && item.submenu && expandedMenus[item.name] && renderSubmenu(item.submenu)}
+    function LinkOrAnchor({ item, className, onClick }) {
+        if (item.isPdf) {
+            return (
+                <a href={item.path} target="_blank" rel="noopener noreferrer" className={className}>
+                    <div className="flex items-center gap-4">
+                        {item.icon && <item.icon size={18} className="text-slate-500" />}
+                        <span>{item.name}</span>
                     </div>
-                ))}
-            </div>
-        </aside>
+                </a>
+            );
+        }
+        return (
+            <Link to={item.path} className={className} onClick={onClick}>
+                <div className="flex items-center gap-4">
+                    {item.icon && <item.icon size={18} className="text-slate-500" />}
+                    <span>{item.name}</span>
+                </div>
+            </Link>
+        );
+    }
+
+    return (
+        <>
+            {/* Backdrop Overlay */}
+            <div
+                className={`fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm transition-opacity duration-300 pointer-events-none ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0'
+                    }`}
+                onClick={closeSidebar}
+            />
+
+            {/* Drawer Sidebar - Matte Dark Blue Theme */}
+            <aside
+                className={`fixed top-0 left-0 z-50 h-full w-80 bg-[#0b1220]/95 backdrop-blur-sm text-slate-200 transition-transform duration-300 ease-in-out border-r border-blue-800/40 shadow-2xl shadow-blue-900/40 overflow-y-auto ${isOpen ? 'translate-x-0' : '-translate-x-full'
+                    }`}
+            >
+                <div className="flex flex-col h-full">
+                    {/* Header with Logo Placeholder */}
+                    <div className="flex items-center justify-center px-6 py-5 border-b border-blue-800/30">
+                        <img
+                            src="/images/image-removebg-preview.png"
+                            alt="Logo"
+                            className="h-12 w-auto object-contain"
+                        />
+                    </div>
+
+                    {/* Menu Items */}
+                    <nav className="flex-1 py-6 px-4 space-y-2">
+                        {menuItems.map(item => (
+                            <div key={item.name} className="space-y-1">
+                                {item.submenu ? (
+                                    <>
+                                        <button
+                                            onClick={(e) => toggleSubmenu(e, item.name)}
+                                            className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 ${expandedMenus[item.name] ? 'bg-blue-600/10 text-white border border-blue-800/30' : 'hover:bg-blue-600/5 text-slate-300 hover:text-white'
+                                                }`}
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                <item.icon size={22} className={expandedMenus[item.name] ? 'text-blue-400' : 'text-blue-500'} />
+                                                <span className="font-semibold">{item.name}</span>
+                                            </div>
+                                            {expandedMenus[item.name] ? <ChevronDown size={18} className="text-blue-400" /> : <ChevronRight size={18} className="opacity-40" />}
+                                        </button>
+                                        {expandedMenus[item.name] && renderSubmenu(item.submenu)}
+                                    </>
+                                ) : (
+                                    <LinkOrAnchor
+                                        item={item}
+                                        className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 ${location.pathname === item.path ? 'bg-blue-600/15 text-blue-400 border border-blue-800/40' : 'hover:bg-blue-600/5 text-slate-300 hover:text-white'
+                                            }`}
+                                        onClick={closeSidebar}
+                                    />
+                                )}
+                            </div>
+                        ))}
+                    </nav>
+                </div>
+            </aside>
+        </>
     );
 };
 
