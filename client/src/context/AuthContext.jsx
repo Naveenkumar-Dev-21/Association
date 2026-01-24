@@ -23,11 +23,14 @@ api.interceptors.request.use(
   }
 );
 
+// TESTING MODE - Set to true to bypass authentication redirects
+const TESTING_MODE = true;
+
 // Handle token expiration
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 && !TESTING_MODE) {
       localStorage.removeItem('token');
       localStorage.removeItem('admin');
       window.location.href = '/login';
@@ -157,6 +160,31 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Google Login function
+  const googleLogin = async (token) => {
+    dispatch({ type: AUTH_ACTIONS.LOGIN_START });
+
+    try {
+      const response = await api.post('/auth/google', { token });
+      const { admin, token: jwtToken } = response.data.data;
+
+      // Store in localStorage
+      localStorage.setItem('token', jwtToken);
+      localStorage.setItem('admin', JSON.stringify(admin));
+
+      dispatch({
+        type: AUTH_ACTIONS.LOGIN_SUCCESS,
+        payload: { admin, token: jwtToken },
+      });
+
+      return { success: true };
+    } catch (error) {
+      const message = error.response?.data?.message || 'Google Login failed';
+      dispatch({ type: AUTH_ACTIONS.LOGIN_FAILURE });
+      return { success: false, message };
+    }
+  };
+
   // Register function
   const register = async (userData) => {
     dispatch({ type: AUTH_ACTIONS.LOGIN_START });
@@ -211,6 +239,7 @@ export const AuthProvider = ({ children }) => {
     ...state,
     login,
     register,
+    googleLogin,
     logout,
     checkAuth,
     api,

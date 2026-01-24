@@ -32,7 +32,8 @@ const Sidebar = () => {
     {
       title: 'Event',
       icon: Calendar,
-      hasSubmenu: true,
+      path: '/events',
+      hasSubmenu: admin?.cellsAndAssociation === 'OT',
       submenu: [
         { title: 'IIC / EMDC', path: '/events?cellsAndAssociation=IIC' },
         { title: 'IT', path: '/events?cellsAndAssociation=IT' },
@@ -62,27 +63,27 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`bg-white shadow-lg transition-all duration-300 ease-in-out ${
+      className={`bg-gray-900 border-r border-gray-800 shadow-2xl transition-all duration-300 ease-in-out ${
         isCollapsed ? 'w-16' : 'w-64'
       } min-h-screen flex flex-col`}
     >
       {/* Header */}
-      <div className="p-4 border-b border-gray-200">
+      <div className="p-4 border-b border-gray-800">
         <div className="flex items-center justify-between">
           {!isCollapsed && (
             <div>
-              <h2 className="text-lg font-bold text-gray-800">Admin Panel</h2>
-              <p className="text-xs text-gray-500">Event Management</p>
+              <h2 className="text-lg font-bold text-white">Admin Panel</h2>
+              <p className="text-xs text-gray-400">Event Management</p>
             </div>
           )}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="p-2 rounded-lg hover:bg-gray-800 transition-colors"
           >
             {isCollapsed ? (
-              <Menu className="h-5 w-5 text-gray-600" />
+              <Menu className="h-5 w-5 text-gray-300" />
             ) : (
-              <X className="h-5 w-5 text-gray-600" />
+              <X className="h-5 w-5 text-gray-300" />
             )}
           </button>
         </div>
@@ -99,8 +100,8 @@ const Sidebar = () => {
                     onClick={() => setEventsExpanded(!eventsExpanded)}
                     className={`w-full flex items-center justify-between p-2 rounded-lg transition-colors ${
                       isActive(item.path) || location.pathname.startsWith('/events')
-                        ? 'bg-blue-50 text-blue-600'
-                        : 'text-gray-700 hover:bg-gray-100'
+                        ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30'
+                        : 'text-gray-300 hover:bg-gray-800'
                     }`}
                   >
                     <div className="flex items-center">
@@ -125,8 +126,8 @@ const Sidebar = () => {
                             to={subItem.path}
                             className={`block p-2 text-sm rounded-lg transition-colors ${
                               isActive(subItem.path)
-                                ? 'bg-blue-50 text-blue-600'
-                                : 'text-gray-600 hover:bg-gray-100'
+                                ? 'bg-blue-600/20 text-blue-400'
+                                : 'text-gray-400 hover:bg-gray-800'
                             }`}
                           >
                             {subItem.title}
@@ -141,8 +142,8 @@ const Sidebar = () => {
                   to={item.path}
                   className={`flex items-center p-2 rounded-lg transition-colors ${
                     isActive(item.path)
-                      ? 'bg-blue-50 text-blue-600'
-                      : 'text-gray-700 hover:bg-gray-100'
+                      ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30'
+                      : 'text-gray-300 hover:bg-gray-800'
                   }`}
                 >
                   <item.icon className="h-5 w-5" />
@@ -157,23 +158,23 @@ const Sidebar = () => {
       </nav>
 
       {/* User Profile & Logout */}
-      <div className="p-4 border-t border-gray-200">
+      <div className="p-4 border-t border-gray-800">
         {!isCollapsed && admin && (
           <div className="mb-4">
             <div className="flex items-center">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <User className="h-4 w-4 text-blue-600" />
+              <div className="w-8 h-8 bg-blue-600/20 border border-blue-500/30 rounded-full flex items-center justify-center">
+                <User className="h-4 w-4 text-blue-400" />
               </div>
               <div className="ml-3">
-                <p className="text-sm font-medium text-gray-800">{admin.name}</p>
-                <p className="text-xs text-gray-500">{admin.cellsAndAssociation}</p>
+                <p className="text-sm font-medium text-white">{admin.name}</p>
+                <p className="text-xs text-gray-400">{admin.cellsAndAssociation}</p>
               </div>
             </div>
           </div>
         )}
         <button
           onClick={logout}
-          className={`w-full flex items-center p-2 rounded-lg transition-colors text-red-600 hover:bg-red-50`}
+          className={`w-full flex items-center p-2 rounded-lg transition-colors text-red-400 hover:bg-red-500/10 hover:border hover:border-red-500/30`}
         >
           <LogOut className="h-5 w-5" />
           {!isCollapsed && (

@@ -182,13 +182,13 @@ const Registrations = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case 'Registered':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-blue-900/40 text-blue-400 border border-blue-500/30';
       case 'Confirmed':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-900/40 text-green-400 border border-green-500/30';
       case 'Cancelled':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-900/40 text-red-400 border border-red-500/30';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-800 text-gray-400 border border-gray-700';
     }
   };
 
@@ -215,30 +215,30 @@ const Registrations = () => {
 
   if (isLoading) {
     return (
-      <div className="flex">
+      <div className="flex bg-gray-950 min-h-screen">
         <Sidebar />
         <div className="flex-1 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400"></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex">
+    <div className="flex bg-gray-950 min-h-screen">
       <Sidebar />
       <div className="flex-1 p-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Registrations</h1>
-              <p className="text-gray-600 mt-2">Manage student event registrations</p>
+              <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-white to-purple-200">Registrations</h1>
+              <p className="text-gray-400 mt-2">Manage student event registrations</p>
             </div>
             <div className="flex items-center space-x-3">
               <button
                 onClick={handleExportCSV}
-                className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                className="inline-flex items-center px-4 py-2 border border-gray-700 text-sm font-medium rounded-md text-gray-300 bg-gray-800 hover:bg-gray-700"
               >
                 <Download className="h-4 w-4 mr-2" />
                 Export CSV
@@ -265,14 +265,14 @@ const Registrations = () => {
 
         {/* Add Registration Form */}
         {showAddForm && (
-          <div className="bg-white rounded-lg shadow mb-6">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">Add New Registration</h2>
+          <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-xl shadow-lg mb-6 overflow-hidden animate-fade-in-up">
+            <div className="p-6 border-b border-gray-800">
+              <h2 className="text-lg font-semibold text-white">Add New Registration</h2>
             </div>
             <form onSubmit={handleSubmit} className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Event *
                   </label>
                   <select
@@ -280,7 +280,7 @@ const Registrations = () => {
                     value={formData.eventId}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Select an event</option>
                     {events.map((event) => (
@@ -290,7 +290,7 @@ const Registrations = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Student Name *
                   </label>
                   <input
@@ -299,13 +299,13 @@ const Registrations = () => {
                     value={formData.studentName}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
                     placeholder="Enter student name"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Student Email *
                   </label>
                   <input
@@ -314,13 +314,13 @@ const Registrations = () => {
                     value={formData.studentEmail}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
                     placeholder="Enter student email"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Student Phone *
                   </label>
                   <input
@@ -329,13 +329,13 @@ const Registrations = () => {
                     value={formData.studentPhone}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
                     placeholder="Enter student phone"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Year *
                   </label>
                   <select
@@ -343,7 +343,7 @@ const Registrations = () => {
                     value={formData.studentYear}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Select year</option>
                     {years.map((year) => (
@@ -357,7 +357,7 @@ const Registrations = () => {
                 <button
                   type="button"
                   onClick={() => setShowAddForm(false)}
-                  className="px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                  className="px-4 py-2 border border-gray-700 text-sm font-medium rounded-md text-gray-300 bg-gray-800 hover:bg-gray-700"
                 >
                   Cancel
                 </button>
@@ -373,23 +373,23 @@ const Registrations = () => {
         )}
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow mb-6">
-          <div className="p-4 border-b border-gray-200">
+        <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-xl shadow-lg mb-6">
+          <div className="p-4 border-b border-gray-800">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <div className="relative">
-                  <Search className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                  <Search className="h-5 w-5 text-gray-500 absolute left-3 top-1/2 transform -translate-y-1/2" />
                   <input
                     type="text"
                     placeholder="Search registrations..."
-                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-500"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
 
                 <select
-                  className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="px-4 py-2 bg-gray-800 border border-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
                 >
@@ -400,7 +400,7 @@ const Registrations = () => {
                 </select>
 
                 <select
-                  className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="px-4 py-2 bg-gray-800 border border-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   value={selectedEvent}
                   onChange={(e) => setSelectedEvent(e.target.value)}
                 >
@@ -415,102 +415,102 @@ const Registrations = () => {
         </div>
 
         {/* Registrations Table */}
-        <div className="bg-white rounded-lg shadow">
+        <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-xl shadow-lg overflow-hidden">
           <div className="p-6">
             {filteredRegistrations.length > 0 ? (
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                <table className="min-w-full divide-y divide-gray-800">
+                  <thead className="bg-gray-800/50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                         <input
-                          type="checkbox"
-                          checked={selectedRegistrations.length === filteredRegistrations.length && filteredRegistrations.length > 0}
-                          onChange={handleSelectAll}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                        />
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Student
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Contact
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Event
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Status
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
-                      </th>
+                           type="checkbox"
+                           checked={selectedRegistrations.length === filteredRegistrations.length && filteredRegistrations.length > 0}
+                           onChange={handleSelectAll}
+                           className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-700 bg-gray-800 rounded"
+                         />
+                       </th>
+                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                         Student
+                       </th>
+                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                         Contact
+                       </th>
+                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                         Event
+                       </th>
+                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                         Status
+                       </th>
+                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                         Actions
+                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="divide-y divide-gray-800">
                     {filteredRegistrations.map((registration) => (
-                      <tr key={registration._id} className="hover:bg-gray-50">
+                      <tr key={registration._id} className="hover:bg-gray-800/30 transition-colors">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <input
                             type="checkbox"
                             checked={selectedRegistrations.includes(registration._id)}
                             onChange={() => handleSelectRegistration(registration._id)}
-                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-700 bg-gray-800 rounded"
                           />
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div>
-                            <div className="text-sm font-medium text-gray-900">
+                            <div className="text-sm font-medium text-white">
                               {registration.studentName}
                             </div>
-                            <div className="text-sm text-gray-500">
-                              {registration.studentYear}
+                            <div className="text-sm text-gray-400">
+                               {registration.studentYear}
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">
+                          <div className="text-sm text-gray-300">
                             <div className="flex items-center">
-                              <Mail className="h-4 w-4 mr-1 text-gray-400" />
+                              <Mail className="h-4 w-4 mr-1 text-gray-500" />
                               {registration.studentEmail}
                             </div>
                           </div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-gray-400">
                             <div className="flex items-center">
-                              <Phone className="h-4 w-4 mr-1 text-gray-400" />
-                              {registration.studentPhone}
+                              <Phone className="h-4 w-4 mr-1 text-gray-500" />
+                               {registration.studentPhone}
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">
+                          <div className="text-sm text-white">
                             {registration.event?.name || 'N/A'}
                           </div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-gray-400">
                             {registration.event?.eventDate && new Date(registration.event.eventDate).toLocaleDateString()}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(registration.status)}`}>
-                            {getStatusIcon(registration.status)}
-                            <span className="ml-1">{registration.status}</span>
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex items-center space-x-2">
-                            <select
-                              value={registration.status}
-                              onChange={(e) => handleStatusUpdate(registration._id, e.target.value)}
-                              className="text-xs border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            >
-                              <option value="Registered">Registered</option>
-                              <option value="Confirmed">Confirmed</option>
-                              <option value="Cancelled">Cancelled</option>
-                            </select>
+                             {getStatusIcon(registration.status)}
+                             <span className="ml-1">{registration.status}</span>
+                           </span>
+                         </td>
+                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                           <div className="flex items-center space-x-2">
+                             <select
+                               value={registration.status}
+                               onChange={(e) => handleStatusUpdate(registration._id, e.target.value)}
+                               className="text-xs bg-gray-800 border border-gray-700 text-white rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                             >
+                               <option value="Registered">Registered</option>
+                               <option value="Confirmed">Confirmed</option>
+                               <option value="Cancelled">Cancelled</option>
+                             </select>
                             <button
-                              onClick={() => handleDelete(registration._id)}
-                              className="text-red-600 hover:text-red-900"
-                            >
+                               onClick={() => handleDelete(registration._id)}
+                               className="text-red-400 hover:text-red-300"
+                             >
                               <Trash2 className="h-4 w-4" />
                             </button>
                           </div>
@@ -522,13 +522,14 @@ const Registrations = () => {
               </div>
             ) : (
               <div className="text-center py-12">
-                <Users className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No registrations found</h3>
-                <p className="text-gray-600 mb-6">
+                <Users className="h-16 w-16 text-gray-600 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-white mb-2">No registrations found</h3>
+                <p className="text-gray-400 mb-6">
                   {searchTerm || statusFilter !== 'all' || selectedEvent
                     ? 'Try adjusting your filters or search terms'
                     : 'Add your first registration to get started'}
                 </p>
+
                 <button
                   onClick={() => setShowAddForm(true)}
                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"

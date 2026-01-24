@@ -32,7 +32,7 @@ module.exports = {
         }
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Poppins', 'sans-serif'],
       },
       animation: {
         'slide-in': 'slideIn 0.3s ease-out',

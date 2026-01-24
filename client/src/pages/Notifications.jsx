@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 
 const Notifications = () => {
-  const { api } = useAuth();
+  const { admin, api } = useAuth();
   const [notifications, setNotifications] = useState([]);
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -157,25 +157,25 @@ const Notifications = () => {
 
   if (isLoading) {
     return (
-      <div className="flex">
+      <div className="flex bg-gray-950 min-h-screen">
         <Sidebar />
         <div className="flex-1 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400"></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex">
+    <div className="flex bg-gray-950 min-h-screen">
       <Sidebar />
       <div className="flex-1 p-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Notifications</h1>
-              <p className="text-gray-600 mt-2">Manage and send notifications to students</p>
+              <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-white to-purple-200">Notifications</h1>
+              <p className="text-gray-400 mt-2">Manage and send notifications to students</p>
             </div>
             <button
               onClick={() => setShowCreateForm(!showCreateForm)}
@@ -189,14 +189,14 @@ const Notifications = () => {
 
         {/* Create Notification Form */}
         {showCreateForm && (
-          <div className="bg-white rounded-lg shadow mb-6">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">Create New Notification</h2>
+          <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-xl shadow-lg mb-6">
+            <div className="p-6 border-b border-gray-800">
+              <h2 className="text-lg font-semibold text-white">Create New Notification</h2>
             </div>
             <form onSubmit={handleSubmit} className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Title *
                   </label>
                   <input
@@ -205,20 +205,20 @@ const Notifications = () => {
                     value={formData.title}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
                     placeholder="Enter notification title"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Type *
                   </label>
                   <select
                     name="type"
                     value={formData.type}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     {notificationTypes.map((type) => (
                       <option key={type} value={type}>{type}</option>
@@ -227,7 +227,7 @@ const Notifications = () => {
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Message *
                   </label>
                   <textarea
@@ -236,17 +236,23 @@ const Notifications = () => {
                     onChange={handleInputChange}
                     required
                     rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
                     placeholder="Enter notification message"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Target Audience *
                   </label>
                   <div className="space-y-2">
-                    {targetAudiences.map((audience) => (
+                    {targetAudiences
+                      .filter(audience => 
+                        admin?.cellsAndAssociation === 'OT' || 
+                        audience === 'All Students' || 
+                        audience.includes(admin?.cellsAndAssociation)
+                      )
+                      .map((audience) => (
                       <label key={audience} className="flex items-center">
                         <input
                           type="checkbox"
@@ -254,21 +260,21 @@ const Notifications = () => {
                           onChange={() => handleTargetAudienceChange(audience)}
                           className="mr-2"
                         />
-                        <span className="text-sm text-gray-700">{audience}</span>
+                        <span className="text-sm text-gray-300">{audience}</span>
                       </label>
                     ))}
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Related Event
                   </label>
                   <select
                     name="relatedEvent"
                     value={formData.relatedEvent}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Select an event (optional)</option>
                     {events.map((event) => (
@@ -278,7 +284,7 @@ const Notifications = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Schedule For
                   </label>
                   <input
@@ -286,7 +292,7 @@ const Notifications = () => {
                     name="scheduledFor"
                     value={formData.scheduledFor}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -295,7 +301,7 @@ const Notifications = () => {
                 <button
                   type="button"
                   onClick={() => setShowCreateForm(false)}
-                  className="px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                  className="px-4 py-2 border border-gray-700 text-sm font-medium rounded-md text-gray-300 bg-gray-800 hover:bg-gray-700"
                 >
                   Cancel
                 </button>
@@ -311,23 +317,23 @@ const Notifications = () => {
         )}
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow mb-6">
-          <div className="p-4 border-b border-gray-200">
+        <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-xl shadow-lg mb-6">
+          <div className="p-4 border-b border-gray-800">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <div className="relative">
-                  <Search className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                  <Search className="h-5 w-5 text-gray-500 absolute left-3 top-1/2 transform -translate-y-1/2" />
                   <input
                     type="text"
                     placeholder="Search notifications..."
-                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-500"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
 
                 <select
-                  className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="px-4 py-2 bg-gray-800 border border-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
                 >
@@ -341,16 +347,16 @@ const Notifications = () => {
         </div>
 
         {/* Notifications List */}
-        <div className="bg-white rounded-lg shadow">
+        <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-xl shadow-lg">
           <div className="p-6">
             {filteredNotifications.length > 0 ? (
               <div className="space-y-4">
                 {filteredNotifications.map((notification) => (
-                  <div key={notification._id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+                  <div key={notification._id} className="border border-gray-700 rounded-lg p-4 hover:bg-gray-800/50 transition-all">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-2">
-                          <h3 className="text-lg font-medium text-gray-900">{notification.title}</h3>
+                          <h3 className="text-lg font-medium text-white">{notification.title}</h3>
                           <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getTypeColor(notification.type)}`}>
                             {notification.type}
                           </span>
@@ -362,7 +368,7 @@ const Notifications = () => {
                           </div>
                         </div>
                         
-                        <p className="text-gray-600 mb-3">{notification.message}</p>
+                        <p className="text-gray-400 mb-3">{notification.message}</p>
                         
                         <div className="flex items-center space-x-4 text-sm text-gray-500">
                           <div className="flex items-center">
@@ -412,9 +418,9 @@ const Notifications = () => {
               </div>
             ) : (
               <div className="text-center py-12">
-                <Bell className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No notifications found</h3>
-                <p className="text-gray-600 mb-6">
+                <Bell className="h-16 w-16 text-gray-600 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-white mb-2">No notifications found</h3>
+                <p className="text-gray-400 mb-6">
                   {searchTerm || statusFilter !== 'all'
                     ? 'Try adjusting your filters or search terms'
                     : 'Create your first notification to get started'}

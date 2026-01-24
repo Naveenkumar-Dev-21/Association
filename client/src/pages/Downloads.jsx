@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 
 const Downloads = () => {
-  const { api } = useAuth();
+  const { admin, api } = useAuth();
   const [summary, setSummary] = useState({
     totalEvents: 0,
     ongoingEvents: 0,
@@ -96,73 +96,73 @@ const Downloads = () => {
 
   if (isLoading) {
     return (
-      <div className="flex">
+      <div className="flex bg-gray-950 min-h-screen">
         <Sidebar />
         <div className="flex-1 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400"></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex">
+    <div className="flex bg-gray-950 min-h-screen">
       <Sidebar />
       <div className="flex-1 p-8">
         {/* Header */}
         <div className="mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Downloads</h1>
-            <p className="text-gray-600 mt-2">Download reports and data exports</p>
+            <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-white to-purple-200">Downloads</h1>
+            <p className="text-gray-400 mt-2">Download reports and data exports</p>
           </div>
         </div>
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-xl shadow-lg p-6 hover:border-blue-500/30 transition-all">
             <div className="flex items-center">
-              <div className="p-3 bg-blue-100 rounded-lg">
-                <Calendar className="h-6 w-6 text-blue-600" />
+              <div className="p-3 bg-blue-600/20 border border-blue-500/30 rounded-lg">
+                <Calendar className="h-6 w-6 text-blue-400" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Total Events</p>
-                <p className="text-2xl font-bold text-gray-900">{summary.totalEvents}</p>
+                <p className="text-sm font-medium text-gray-400">Total Events</p>
+                <p className="text-2xl font-bold text-white">{summary.totalEvents}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-xl shadow-lg p-6 hover:border-blue-500/30 transition-all">
             <div className="flex items-center">
-              <div className="p-3 bg-green-100 rounded-lg">
-                <Activity className="h-6 w-6 text-green-600" />
+              <div className="p-3 bg-green-600/20 border border-green-500/30 rounded-lg">
+                <Activity className="h-6 w-6 text-green-400" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Ongoing Events</p>
-                <p className="text-2xl font-bold text-gray-900">{summary.ongoingEvents}</p>
+                <p className="text-sm font-medium text-gray-400">Ongoing Events</p>
+                <p className="text-2xl font-bold text-white">{summary.ongoingEvents}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-xl shadow-lg p-6 hover:border-blue-500/30 transition-all">
             <div className="flex items-center">
-              <div className="p-3 bg-yellow-100 rounded-lg">
-                <TrendingUp className="h-6 w-6 text-yellow-600" />
+              <div className="p-3 bg-yellow-600/20 border border-yellow-500/30 rounded-lg">
+                <TrendingUp className="h-6 w-6 text-yellow-400" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Upcoming Events</p>
-                <p className="text-2xl font-bold text-gray-900">{summary.upcomingEvents}</p>
+                <p className="text-sm font-medium text-gray-400">Upcoming Events</p>
+                <p className="text-2xl font-bold text-white">{summary.upcomingEvents}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-xl shadow-lg p-6 hover:border-blue-500/30 transition-all">
             <div className="flex items-center">
-              <div className="p-3 bg-purple-100 rounded-lg">
-                <Users className="h-6 w-6 text-purple-600" />
+              <div className="p-3 bg-purple-600/20 border border-purple-500/30 rounded-lg">
+                <Users className="h-6 w-6 text-purple-400" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Total Registrations</p>
-                <p className="text-2xl font-bold text-gray-900">{summary.totalRegistrations}</p>
+                <p className="text-sm font-medium text-gray-400">Total Registrations</p>
+                <p className="text-2xl font-bold text-white">{summary.totalRegistrations}</p>
               </div>
             </div>
           </div>
@@ -170,19 +170,19 @@ const Downloads = () => {
 
         {/* Department Statistics */}
         {Object.keys(summary.registrationsByDepartment).length > 0 && (
-          <div className="bg-white rounded-lg shadow mb-8">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">Registrations by Department</h2>
+          <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-xl shadow-lg mb-8">
+            <div className="p-6 border-b border-gray-800">
+              <h2 className="text-lg font-semibold text-white">Registrations by Department</h2>
             </div>
             <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {Object.entries(summary.registrationsByDepartment).map(([department, count]) => (
-                  <div key={department} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div key={department} className="flex items-center justify-between p-4 bg-gray-800/50 border border-gray-700 rounded-lg">
                     <div className="flex items-center">
-                      <PieChart className="h-5 w-5 text-gray-400 mr-3" />
-                      <span className="text-sm font-medium text-gray-900">{department}</span>
+                      <PieChart className="h-5 w-5 text-gray-500 mr-3" />
+                      <span className="text-sm font-medium text-white">{department}</span>
                     </div>
-                    <span className="text-sm font-bold text-blue-600">{count}</span>
+                    <span className="text-sm font-bold text-blue-400">{count}</span>
                   </div>
                 ))}
               </div>
@@ -193,45 +193,47 @@ const Downloads = () => {
         {/* Download Options */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Events Download */}
-          <div className="bg-white rounded-lg shadow">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">Event Reports</h2>
-              <p className="text-sm text-gray-600 mt-1">Download complete event data</p>
+          <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-xl shadow-lg">
+            <div className="p-6 border-b border-gray-800">
+              <h2 className="text-lg font-semibold text-white">Event Reports</h2>
+              <p className="text-sm text-gray-400 mt-1">Download complete event data</p>
             </div>
             <div className="p-6">
               <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Filter by Department
-                  </label>
-                  <select
-                    value={departmentFilter}
-                    onChange={(e) => setDepartmentFilter(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="all">All Departments</option>
-                    <option value="IT">IT</option>
-                    <option value="IIC">IIC</option>
-                    <option value="EMDC">EMDC</option>
-                  </select>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                {admin?.cellsAndAssociation === 'OT' && (
                   <div>
-                    <h3 className="text-sm font-medium text-gray-900">Events Data</h3>
-                    <p className="text-xs text-gray-500">Complete event information</p>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Filter by Department
+                    </label>
+                    <select
+                      value={departmentFilter}
+                      onChange={(e) => setDepartmentFilter(e.target.value)}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="all">All Departments</option>
+                      <option value="IT">IT</option>
+                      <option value="IIC">IIC</option>
+                      <option value="EMDC">EMDC</option>
+                    </select>
+                  </div>
+                )}
+
+                <div className="flex items-center justify-between p-4 bg-gray-800/50 border border-gray-700 rounded-lg">
+                  <div>
+                    <h3 className="text-sm font-medium text-white">Events Data</h3>
+                    <p className="text-xs text-gray-400">Complete event information</p>
                   </div>
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => handleDownloadEvents('csv')}
-                      className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                      className="inline-flex items-center px-3 py-2 border border-gray-700 text-sm font-medium rounded-md text-gray-300 bg-gray-800 hover:bg-gray-700"
                     >
                       <Download className="h-4 w-4 mr-2" />
                       CSV
                     </button>
                     <button
                       onClick={() => handleDownloadEvents('json')}
-                      className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                      className="inline-flex items-center px-3 py-2 border border-gray-700 text-sm font-medium rounded-md text-gray-300 bg-gray-800 hover:bg-gray-700"
                     >
                       <Download className="h-4 w-4 mr-2" />
                       JSON
@@ -249,10 +251,10 @@ const Downloads = () => {
           </div>
 
           {/* Registration Downloads */}
-          <div className="bg-white rounded-lg shadow">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">Registration Reports</h2>
-              <p className="text-sm text-gray-600 mt-1">Download student registration data</p>
+          <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-xl shadow-lg">
+            <div className="p-6 border-b border-gray-800">
+              <h2 className="text-lg font-semibold text-white">Registration Reports</h2>
+              <p className="text-sm text-gray-400 mt-1">Download student registration data</p>
             </div>
             <div className="p-6">
               <div className="space-y-4">
@@ -260,16 +262,16 @@ const Downloads = () => {
                   {events.length > 0 ? (
                     <div className="space-y-2">
                       {events.map((event) => (
-                        <div key={event._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100">
+                        <div key={event._id} className="flex items-center justify-between p-3 bg-gray-800/50 border border-gray-700 rounded-lg hover:border-blue-500/30 transition-all">
                           <div className="flex-1">
-                            <h4 className="text-sm font-medium text-gray-900">{event.name}</h4>
-                            <p className="text-xs text-gray-500">
+                            <h4 className="text-sm font-medium text-white">{event.name}</h4>
+                            <p className="text-xs text-gray-400">
                               {event.department} • {event.currentRegistrations} registrations
                             </p>
                           </div>
                           <button
                             onClick={() => handleDownloadRegistrations(event._id)}
-                            className="inline-flex items-center px-3 py-1 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                            className="inline-flex items-center px-3 py-1 border border-gray-700 text-xs font-medium rounded-md text-gray-300 bg-gray-800 hover:bg-gray-700"
                           >
                             <Download className="h-3 w-3 mr-1" />
                             CSV
@@ -279,8 +281,8 @@ const Downloads = () => {
                     </div>
                   ) : (
                     <div className="text-center py-8">
-                      <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-sm text-gray-500">No events available</p>
+                      <FileText className="h-12 w-12 text-gray-600 mx-auto mb-4" />
+                      <p className="text-sm text-gray-400">No events available</p>
                     </div>
                   )}
                 </div>
@@ -296,16 +298,16 @@ const Downloads = () => {
         </div>
 
         {/* Summary Report */}
-        <div className="mt-8 bg-white rounded-lg shadow">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">Summary Report</h2>
-            <p className="text-sm text-gray-600 mt-1">Complete system overview and analytics</p>
+        <div className="mt-8 bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-xl shadow-lg">
+          <div className="p-6 border-b border-gray-800">
+            <h2 className="text-lg font-semibold text-white">Summary Report</h2>
+            <p className="text-sm text-gray-400 mt-1">Complete system overview and analytics</p>
           </div>
           <div className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-medium text-gray-900">System Summary</h3>
-                <p className="text-xs text-gray-500">
+                <h3 className="text-sm font-medium text-white">System Summary</h3>
+                <p className="text-xs text-gray-400">
                   Generated on {new Date().toLocaleDateString()} • 
                   {summary.totalEvents} events • {summary.totalRegistrations} total registrations
                 </p>

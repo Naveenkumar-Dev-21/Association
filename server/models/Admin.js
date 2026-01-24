@@ -17,8 +17,14 @@ const adminSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, 'Password is required'],
+    // Password not required if using Google Auth
+    required: function() { return !this.googleId; },
     minlength: [6, 'Password must be at least 6 characters long']
+  },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true
   },
   role: {
     type: String,
@@ -28,7 +34,7 @@ const adminSchema = new mongoose.Schema({
   cellsAndAssociation: {
     type: String,
     required: [true, 'Cells and Association is required'],
-    enum: ['IT', 'IIC', 'EMDC'],
+    enum: ['IT', 'IIC', 'EMDC', 'OT'],
     trim: true
   },
   isActive: {

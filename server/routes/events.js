@@ -60,9 +60,13 @@ const upload = multer({
 router.get('/', auth, async (req, res) => {
   try {
     const { cellsAndAssociation, status } = req.query;
-    const filter = { createdBy: req.admin._id };
+    let filter = {};
     
-    if (cellsAndAssociation && cellsAndAssociation !== 'ALL') {
+    // If not OT, restrict to their own association
+    if (req.admin.cellsAndAssociation !== 'OT') {
+      filter.cellsAndAssociation = req.admin.cellsAndAssociation;
+    } else if (cellsAndAssociation && cellsAndAssociation !== 'ALL') {
+      // OT can filter by specific association
       filter.cellsAndAssociation = cellsAndAssociation;
     }
     

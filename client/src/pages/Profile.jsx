@@ -157,12 +157,12 @@ const Profile = () => {
 
   if (!admin) {
     return (
-      <div className="flex">
+      <div className="flex bg-gray-950 min-h-screen">
         <Sidebar />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <User className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600">Loading profile...</p>
+            <User className="h-16 w-16 text-gray-600 mx-auto mb-4" />
+            <p className="text-gray-400">Loading profile...</p>
           </div>
         </div>
       </div>
@@ -170,26 +170,26 @@ const Profile = () => {
   }
 
   return (
-    <div className="flex">
+    <div className="flex bg-gray-950 min-h-screen">
       <Sidebar />
       <div className="flex-1 p-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Profile</h1>
-          <p className="text-gray-600 mt-2">Manage your account settings and preferences</p>
+          <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-white to-purple-200">Profile</h1>
+          <p className="text-gray-400 mt-2">Manage your account settings and preferences</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Profile Card */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow">
-              <div className="p-6 border-b border-gray-200">
+            <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-xl shadow-lg">
+              <div className="p-6 border-b border-gray-800">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-semibold text-gray-900">Profile Information</h2>
+                  <h2 className="text-lg font-semibold text-white">Profile Information</h2>
                   {!isEditing ? (
                     <button
                       onClick={() => setIsEditing(true)}
-                      className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                      className="inline-flex items-center px-3 py-2 border border-gray-700 text-sm font-medium rounded-md text-gray-300 bg-gray-800 hover:bg-gray-700"
                     >
                       <Edit className="h-4 w-4 mr-2" />
                       Edit Profile
@@ -198,7 +198,7 @@ const Profile = () => {
                     <div className="flex items-center space-x-2">
                       <button
                         onClick={handleCancelEdit}
-                        className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                        className="inline-flex items-center px-3 py-2 border border-gray-700 text-sm font-medium rounded-md text-gray-300 bg-gray-800 hover:bg-gray-700"
                       >
                         <X className="h-4 w-4 mr-2" />
                         Cancel
@@ -220,11 +220,11 @@ const Profile = () => {
                 <form onSubmit={handleProfileUpdate}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
                         Full Name
                       </label>
                       <div className="relative">
-                        <User className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                        <User className="h-5 w-5 text-gray-500 absolute left-3 top-1/2 transform -translate-y-1/2" />
                         <input
                           type="text"
                           name="name"
@@ -232,18 +232,18 @@ const Profile = () => {
                           onChange={handleProfileChange}
                           disabled={!isEditing}
                           className={`w-full pl-10 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                            isEditing ? 'border-gray-300' : 'border-gray-200 bg-gray-50'
+                            isEditing ? 'border-gray-700 bg-gray-800 text-white' : 'border-gray-700 bg-gray-900 text-gray-400'
                           }`}
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
                         Email Address
                       </label>
                       <div className="relative">
-                        <Mail className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                        <Mail className="h-5 w-5 text-gray-500 absolute left-3 top-1/2 transform -translate-y-1/2" />
                         <input
                           type="email"
                           name="email"
@@ -251,14 +251,14 @@ const Profile = () => {
                           onChange={handleProfileChange}
                           disabled={!isEditing}
                           className={`w-full pl-10 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                            isEditing ? 'border-gray-300' : 'border-gray-200 bg-gray-50'
+                            isEditing ? 'border-gray-700 bg-gray-800 text-white' : 'border-gray-700 bg-gray-900 text-gray-400'
                           }`}
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
                         Cells and Association
                       </label>
                       <select
@@ -267,7 +267,7 @@ const Profile = () => {
                         onChange={handleProfileChange}
                         disabled={!isEditing}
                         className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                          isEditing ? 'border-gray-300' : 'border-gray-200 bg-gray-50'
+                          isEditing ? 'border-gray-700 bg-gray-800 text-white' : 'border-gray-700 bg-gray-900 text-gray-400'
                         }`}
                       >
                         <option value="IT">IT</option>
@@ -277,33 +277,33 @@ const Profile = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
                         Role
                       </label>
                       <div className="relative">
-                        <Shield className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                        <Shield className="h-5 w-5 text-gray-500 absolute left-3 top-1/2 transform -translate-y-1/2" />
                         <input
                           type="text"
                           name="role"
                           value={profileData.role}
                           disabled
-                          className="w-full pl-10 pr-3 py-2 border border-gray-200 bg-gray-50 rounded-md"
+                          className="w-full pl-10 pr-3 py-2 border border-gray-700 bg-gray-900 text-gray-400 rounded-md"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
                         Last Login
                       </label>
                       <div className="relative">
-                        <Calendar className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                        <Calendar className="h-5 w-5 text-gray-500 absolute left-3 top-1/2 transform -translate-y-1/2" />
                         <input
                           type="text"
                           name="lastLogin"
                           value={profileData.lastLogin ? new Date(profileData.lastLogin).toLocaleString() : 'Never'}
                           disabled
-                          className="w-full pl-10 pr-3 py-2 border border-gray-200 bg-gray-50 rounded-md"
+                          className="w-full pl-10 pr-3 py-2 border border-gray-700 bg-gray-900 text-gray-400 rounded-md"
                         />
                       </div>
                     </div>
@@ -316,9 +316,9 @@ const Profile = () => {
           {/* Quick Actions */}
           <div className="space-y-6">
             {/* Change Password */}
-            <div className="bg-white rounded-lg shadow">
-              <div className="p-6 border-b border-gray-200">
-                <h2 className="text-lg font-semibold text-gray-900">Security</h2>
+            <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-xl shadow-lg">
+              <div className="p-6 border-b border-gray-800">
+                <h2 className="text-lg font-semibold text-white">Security</h2>
               </div>
               <div className="p-6">
                 {!isChangingPassword ? (
@@ -326,13 +326,13 @@ const Profile = () => {
                     <div className="flex items-center mb-4">
                       <Lock className="h-5 w-5 text-gray-400 mr-3" />
                       <div>
-                        <p className="text-sm font-medium text-gray-900">Password</p>
-                        <p className="text-xs text-gray-500">Last changed recently</p>
+                        <p className="text-sm font-medium text-white">Password</p>
+                        <p className="text-xs text-gray-400">Last changed recently</p>
                       </div>
                     </div>
                     <button
                       onClick={() => setIsChangingPassword(true)}
-                      className="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                      className="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-700 text-sm font-medium rounded-md text-gray-300 bg-gray-800 hover:bg-gray-700"
                     >
                       <Lock className="h-4 w-4 mr-2" />
                       Change Password
@@ -342,7 +342,7 @@ const Profile = () => {
                   <form onSubmit={handlePasswordUpdate}>
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
                           Current Password
                         </label>
                         <div className="relative">
@@ -352,7 +352,7 @@ const Profile = () => {
                             value={passwordData.currentPassword}
                             onChange={handlePasswordChange}
                             required
-                            className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 pr-10 bg-gray-800 border border-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                           />
                           <button
                             type="button"
@@ -369,7 +369,7 @@ const Profile = () => {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
                           New Password
                         </label>
                         <div className="relative">
@@ -380,7 +380,7 @@ const Profile = () => {
                             onChange={handlePasswordChange}
                             required
                             minLength="6"
-                            className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 pr-10 bg-gray-800 border border-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                           />
                           <button
                             type="button"
@@ -397,7 +397,7 @@ const Profile = () => {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
                           Confirm New Password
                         </label>
                         <div className="relative">
@@ -408,7 +408,7 @@ const Profile = () => {
                             onChange={handlePasswordChange}
                             required
                             minLength="6"
-                            className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 pr-10 bg-gray-800 border border-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                           />
                           <button
                             type="button"
@@ -435,7 +435,7 @@ const Profile = () => {
                         <button
                           type="button"
                           onClick={handleCancelPasswordChange}
-                          className="flex-1 inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                          className="flex-1 inline-flex items-center justify-center px-4 py-2 border border-gray-700 text-sm font-medium rounded-md text-gray-300 bg-gray-800 hover:bg-gray-700"
                         >
                           Cancel
                         </button>
@@ -447,9 +447,9 @@ const Profile = () => {
             </div>
 
             {/* Account Actions */}
-            <div className="bg-white rounded-lg shadow">
-              <div className="p-6 border-b border-gray-200">
-                <h2 className="text-lg font-semibold text-gray-900">Account Actions</h2>
+            <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-xl shadow-lg">
+              <div className="p-6 border-b border-gray-800">
+                <h2 className="text-lg font-semibold text-white">Account Actions</h2>
               </div>
               <div className="p-6 space-y-4">
                 <button

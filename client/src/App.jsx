@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
-import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Events from './pages/Events';
 import CreateEvent from './pages/CreateEvent';
@@ -12,11 +11,20 @@ import Notifications from './pages/Notifications';
 import Downloads from './pages/Downloads';
 import Profile from './pages/Profile';
 import LoadingSpinner from './components/LoadingSpinner';
+import ClickSpark from './components/ClickSpark';
 import './App.css';
+
+// TESTING MODE - Set to true to bypass authentication
+const TESTING_MODE = true;
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
+
+  // Bypass authentication in testing mode
+  if (TESTING_MODE) {
+    return children;
+  }
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -29,6 +37,11 @@ const ProtectedRoute = ({ children }) => {
 const PublicRoute = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
 
+  // In testing mode, allow access to login page
+  if (TESTING_MODE) {
+    return children;
+  }
+
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -36,29 +49,33 @@ const PublicRoute = ({ children }) => {
   return !isAuthenticated ? children : <Navigate to="/dashboard" />;
 };
 
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
 function App() {
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "YOUR_CLIENT_ID";
+
   return (
-    <AuthProvider>
-      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <div className="App">
-          <Routes>
-            {/* Public routes */}
-            <Route
-              path="/login"
-              element={
-                <PublicRoute>
-                  <Login />
-                </PublicRoute>
-              }
-            />
-            <Route
-              path="/register"
-              element={
-                <PublicRoute>
-                  <Register />
-                </PublicRoute>
-              }
-            />
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <AuthProvider>
+        <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <ClickSpark
+            sparkColor='#fff'
+            sparkSize={10}
+            sparkRadius={15}
+            sparkCount={8}
+            duration={400}
+          >
+            <div className="App">
+            <Routes>
+              {/* Public routes */}
+              <Route
+                path="/login"
+                element={
+                  <PublicRoute>
+                    <Login />
+                  </PublicRoute>
+                }
+              />
 
             {/* Protected routes */}
             <Route
@@ -147,9 +164,11 @@ function App() {
               },
             }}
           />
-        </div>
-      </Router>
+          </div>
+          </ClickSpark>
+        </Router>
     </AuthProvider>
+    </GoogleOAuthProvider>
   );
 }
 

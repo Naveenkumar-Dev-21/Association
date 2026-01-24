@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 
 const Events = () => {
-  const { api } = useAuth();
+  const { admin, api } = useAuth();
   const [searchParams] = useSearchParams();
   const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
@@ -91,25 +91,25 @@ const Events = () => {
 
   if (isLoading) {
     return (
-      <div className="flex">
+      <div className="flex bg-gray-950 min-h-screen">
         <Sidebar />
         <div className="flex-1 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400"></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex">
+    <div className="flex bg-gray-950 min-h-screen">
       <Sidebar />
       <div className="flex-1 p-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Events</h1>
-              <p className="text-gray-600 mt-2">
+              <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-white to-purple-200">Events</h1>
+              <p className="text-gray-400 mt-2">
                 Manage your college events and activities
               </p>
             </div>
@@ -124,37 +124,39 @@ const Events = () => {
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow mb-6">
-          <div className="p-4 border-b border-gray-200">
+        <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-xl shadow-lg mb-6">
+          <div className="p-4 border-b border-gray-800">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 {/* Search */}
                 <div className="relative">
-                  <Search className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                  <Search className="h-5 w-5 text-gray-500 absolute left-3 top-1/2 transform -translate-y-1/2" />
                   <input
                     type="text"
                     placeholder="Search events..."
-                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-500"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
 
                 {/* Cells and Association Filter */}
-                <select
-                  className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  value={cellsAndAssociationFilter}
-                  onChange={(e) => setCellsAndAssociationFilter(e.target.value)}
-                >
-                  <option value="all">All Cells and Associations</option>
-                  <option value="IT">IT</option>
-                  <option value="IIC">IIC</option>
-                  <option value="EMDC">EMDC</option>
-                </select>
+                {admin?.cellsAndAssociation === 'OT' && (
+                  <select
+                    className="px-4 py-2 bg-gray-800 border border-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    value={cellsAndAssociationFilter}
+                    onChange={(e) => setCellsAndAssociationFilter(e.target.value)}
+                  >
+                    <option value="all">All Cells and Associations</option>
+                    <option value="IT">IT</option>
+                    <option value="IIC">IIC</option>
+                    <option value="EMDC">EMDC</option>
+                  </select>
+                )}
 
                 {/* Status Filter */}
                 <select
-                  className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="px-4 py-2 bg-gray-800 border border-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
                 >
@@ -168,7 +170,7 @@ const Events = () => {
 
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center px-3 py-2 text-gray-600 hover:text-gray-900"
+                className="flex items-center px-3 py-2 text-gray-400 hover:text-white"
               >
                 <Filter className="h-4 w-4 mr-2" />
                 Filters
@@ -178,8 +180,8 @@ const Events = () => {
           </div>
 
           {/* Results count */}
-          <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
-            <p className="text-sm text-gray-600">
+          <div className="px-4 py-3 bg-gray-800/50 border-b border-gray-800">
+            <p className="text-sm text-gray-400">
               Showing {filteredEvents.length} of {events.length} events
             </p>
           </div>
@@ -189,13 +191,13 @@ const Events = () => {
         {filteredEvents.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredEvents.map((event) => (
-              <div key={event._id} className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow">
+              <div key={event._id} className="bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-xl shadow-lg hover:border-blue-500/30 transition-all">
                 {/* Event Header */}
                 <div className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">{event.name}</h3>
-                      <p className="text-sm text-gray-600">{event.organizingBody}</p>
+                      <h3 className="text-lg font-semibold text-white mb-2">{event.name}</h3>
+                      <p className="text-sm text-gray-400">{event.organizingBody}</p>
                     </div>
                     <div className="flex items-center space-x-2">
                       <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${getStatusColor(event.status)}`}>
@@ -209,33 +211,33 @@ const Events = () => {
 
                   {/* Event Details */}
                   <div className="space-y-2 mb-4">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Calendar className="h-4 w-4 mr-2 text-gray-400" />
+                    <div className="flex items-center text-sm text-gray-400">
+                      <Calendar className="h-4 w-4 mr-2 text-gray-500" />
                       {new Date(event.eventDate).toLocaleDateString()}
                     </div>
                     {event.mode === 'Offline' && (
-                      <div className="flex items-center text-sm text-gray-600">
-                        <MapPin className="h-4 w-4 mr-2 text-gray-400" />
+                      <div className="flex items-center text-sm text-gray-400">
+                        <MapPin className="h-4 w-4 mr-2 text-gray-500" />
                         {event.venue}
                       </div>
                     )}
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Users className="h-4 w-4 mr-2 text-gray-400" />
+                    <div className="flex items-center text-sm text-gray-400">
+                      <Users className="h-4 w-4 mr-2 text-gray-500" />
                       {event.currentRegistrations}/{event.maxParticipants} registered
                     </div>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Clock className="h-4 w-4 mr-2 text-gray-400" />
+                    <div className="flex items-center text-sm text-gray-400">
+                      <Clock className="h-4 w-4 mr-2 text-gray-500" />
                       {event.eventType.join(', ')}
                     </div>
                   </div>
 
                   {/* Progress Bar */}
                   <div className="mb-4">
-                    <div className="flex items-center justify-between text-sm text-gray-600 mb-1">
+                    <div className="flex items-center justify-between text-sm text-gray-400 mb-1">
                       <span>Registration Progress</span>
                       <span>{Math.round((event.currentRegistrations / event.maxParticipants) * 100)}%</span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="w-full bg-gray-700 rounded-full h-2">
                       <div
                         className="bg-blue-600 h-2 rounded-full"
                         style={{ width: `${(event.currentRegistrations / event.maxParticipants) * 100}%` }}
@@ -244,19 +246,19 @@ const Events = () => {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-800">
                     <div className="flex items-center space-x-2">
-                      <button className="p-2 text-gray-400 hover:text-blue-600 transition-colors">
+                      <button className="p-2 text-gray-500 hover:text-blue-400 transition-colors">
                         <Eye className="h-4 w-4" />
                       </button>
-                      <button className="p-2 text-gray-400 hover:text-green-600 transition-colors">
+                      <button className="p-2 text-gray-500 hover:text-green-400 transition-colors">
                         <Edit className="h-4 w-4" />
                       </button>
-                      <button className="p-2 text-gray-400 hover:text-red-600 transition-colors">
+                      <button className="p-2 text-gray-500 hover:text-red-400 transition-colors">
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-gray-400">
                       {event.cellsAndAssociation}
                     </span>
                   </div>
@@ -265,11 +267,11 @@ const Events = () => {
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow p-12">
+          <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-xl shadow-lg p-12">
             <div className="text-center">
-              <Calendar className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No events found</h3>
-              <p className="text-gray-600 mb-6">
+              <Calendar className="h-16 w-16 text-gray-600 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-white mb-2">No events found</h3>
+              <p className="text-gray-400 mb-6">
                 {searchTerm || statusFilter !== 'all' || cellsAndAssociationFilter !== 'all'
                   ? 'Try adjusting your filters or search terms'
                   : 'Get started by creating your first event'}

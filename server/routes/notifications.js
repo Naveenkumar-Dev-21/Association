@@ -13,7 +13,12 @@ router.get('/', auth, async (req, res) => {
   try {
     const { type, status } = req.query;
     
-    let filter = { createdBy: req.admin._id };
+    let filter = {};
+
+    // If not OT, restrict to their own association
+    if (req.admin.cellsAndAssociation !== 'OT') {
+      filter.cellsAndAssociation = req.admin.cellsAndAssociation;
+    }
     
     if (type) {
       filter.type = type;
@@ -90,7 +95,8 @@ router.post('/', [
       targetAudience,
       relatedEvent: relatedEvent || null,
       scheduledFor: scheduledFor ? new Date(scheduledFor) : new Date(),
-      createdBy: req.admin._id
+      createdBy: req.admin._id,
+      cellsAndAssociation: req.admin.cellsAndAssociation
     });
 
     await notification.save();
