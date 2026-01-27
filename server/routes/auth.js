@@ -20,8 +20,7 @@ router.post('/register', [
   body('name').trim().notEmpty().withMessage('Name is required'),
   body('email').isEmail().normalizeEmail().withMessage('Please provide a valid email'),
   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
-  body('clubName').trim().notEmpty().withMessage('Club name is required'),
-  body('department').isIn(['IT', 'IIC', 'EMDC', 'ALL']).withMessage('Invalid department')
+  body('cellsAndAssociation').isIn(['IT', 'IIC', 'EMDC']).withMessage('Invalid Cells and Association')
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -33,7 +32,7 @@ router.post('/register', [
       });
     }
 
-    const { name, email, password, clubName, department } = req.body;
+    const { name, email, password, cellsAndAssociation } = req.body;
 
     // Check if admin already exists
     const existingAdmin = await Admin.findOne({ email });
@@ -49,8 +48,7 @@ router.post('/register', [
       name,
       email,
       password,
-      clubName,
-      department
+      cellsAndAssociation
     });
 
     await admin.save();
@@ -72,6 +70,88 @@ router.post('/register', [
       success: false,
       message: 'Server error during registration'
     });
+  }
+});
+
+// @route   POST /api/auth/google
+// @desc    Login/Register with Google
+// @access  Public
+router.post('/google', async (req, res) => {
+  try {
+    const { token: googleToken } = req.body;
+    
+    // Authorization Check via Env
+    const verifyAssociation = (email) => {
+      const associations = ['IT', 'IIC', 'EMDC', 'OT'];
+      for (const assoc of associations) {
+        const allowedEmails = process.env[`ADMIN_EMAILS_${assoc}`]?.split(',') || [];
+        if (allowedEmails.includes(email)) {
+          return assoc;
+        }
+      }
+      return null;
+    };
+
+    const { OAuth2Client } = require('google-auth-library');
+    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+    
+    const ticket = await client.verifyIdToken({
+        idToken: googleToken,
+        audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    
+    const { email, name, sub: googleId } = payload;
+    
+    // Check if email is in any allowlist
+    const matchedAssociation = verifyAssociation(email);
+    
+    if (!matchedAssociation) {
+      return res.status(401).json({
+        success: false,
+        message: 'Access Denied: Email not authorized.'
+      });
+    }
+
+    let admin = await Admin.findOne({ email });
+
+    if (admin) {
+      // Update googleId if missing
+      if (!admin.googleId) {
+        admin.googleId = googleId;
+      }
+      // Update association if it changed in env
+      if (admin.cellsAndAssociation !== matchedAssociation) {
+        admin.cellsAndAssociation = matchedAssociation;
+      }
+      await admin.save();
+    } else {
+      // Create new admin
+      admin = new Admin({
+        name,
+        email,
+        googleId,
+        cellsAndAssociation: matchedAssociation,
+        password: Math.random().toString(36).slice(-8)
+      });
+      await admin.save();
+    }
+
+    if (!admin.isActive) {
+      return res.status(401).json({ success: false, message: 'Account deactivated' });
+    }
+
+    const token = generateToken(admin._id);
+
+    res.json({
+      success: true,
+      message: 'Google login successful',
+      data: { admin, token }
+    });
+
+  } catch (error) {
+    console.error('Google Auth Error:', error);
+    res.status(500).json({ success: false, message: 'Google Auth failed' });
   }
 });
 

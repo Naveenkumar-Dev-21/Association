@@ -22,11 +22,6 @@ const registrationSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  studentDepartment: {
-    type: String,
-    required: true,
-    trim: true
-  },
   studentYear: {
     type: String,
     required: true

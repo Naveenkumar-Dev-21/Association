@@ -34,9 +34,9 @@ router.get('/registrations/:eventId', auth, async (req, res) => {
 
     if (format === 'csv') {
       // Generate CSV
-      const csvHeader = 'Student Name,Email,Phone,Department,Year,Registration Date,Status\n';
+      const csvHeader = 'Student Name,Email,Phone,Year,Registration Date,Status\n';
       const csvData = registrations.map(reg => 
-        `"${reg.studentName}","${reg.studentEmail}","${reg.studentPhone}","${reg.studentDepartment}","${reg.studentYear}","${reg.registrationDate.toISOString().split('T')[0]}","${reg.status}"`
+        `"${reg.studentName}","${reg.studentEmail}","${reg.studentPhone}","${reg.studentYear}","${reg.registrationDate.toISOString().split('T')[0]}","${reg.status}"`
       ).join('\n');
       
       res.setHeader('Content-Type', 'text/csv');
@@ -71,12 +71,12 @@ router.get('/registrations/:eventId', auth, async (req, res) => {
 // @access  Private
 router.get('/events', auth, async (req, res) => {
   try {
-    const { format, department } = req.query;
+    const { format, cellsAndAssociation } = req.query;
     
     let filter = { createdBy: req.admin._id };
     
-    if (department && department !== 'ALL') {
-      filter.department = department;
+    if (cellsAndAssociation && cellsAndAssociation !== 'ALL') {
+      filter.cellsAndAssociation = cellsAndAssociation;
     }
 
     const events = await Event.find(filter)
@@ -85,9 +85,9 @@ router.get('/events', auth, async (req, res) => {
 
     if (format === 'csv') {
       // Generate CSV
-      const csvHeader = 'Event Name,Organizing Body,Event Type,Mode,Date,Venue,Department,Status,Max Participants,Current Registrations,Created By,Created Date\n';
+      const csvHeader = 'Event Name,Organizing Body,Event Type,Mode,Date,Venue,Cells and Association,Status,Max Participants,Current Registrations,Created By,Created Date\n';
       const csvData = events.map(event => 
-        `"${event.name}","${event.organizingBody}","${event.eventType.join(', ')}","${event.mode}","${event.eventDate.toISOString().split('T')[0]}","${event.venue || 'N/A'}","${event.department}","${event.status}",${event.maxParticipants},${event.currentRegistrations},"${event.createdBy.name}","${event.createdAt.toISOString().split('T')[0]}"`
+        `"${event.name}","${event.organizingBody}","${event.eventType.join(', ')}","${event.mode}","${event.eventDate.toISOString().split('T')[0]}","${event.venue || 'N/A'}","${event.cellsAndAssociation}","${event.status}",${event.maxParticipants},${event.currentRegistrations},"${event.createdBy.name}","${event.createdAt.toISOString().split('T')[0]}"`
       ).join('\n');
       
       res.setHeader('Content-Type', 'text/csv');

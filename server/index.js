@@ -12,11 +12,15 @@ const registrationRoutes = require('./routes/registrations');
 const notificationRoutes = require('./routes/notifications');
 const downloadRoutes = require('./routes/downloads');
 const profileRoutes = require('./routes/profile');
+const outerCollegeRoutes = require('./routes/outerCollegeRegistrations');
 
 const app = express();
 
 // Security middleware
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  contentSecurityPolicy: false
+}));
 app.set('trust proxy', 1);
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:3000',
@@ -34,8 +38,12 @@ app.use('/api/', limiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Static files for uploads
-app.use('/uploads', express.static('uploads'));
+// Static files for uploads - allow cross-origin access
+app.use('/uploads', express.static('uploads', {
+  setHeaders: (res) => {
+    res.set('Cross-Origin-Resource-Policy', 'cross-origin');
+  }
+}));
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -44,6 +52,7 @@ app.use('/api/registrations', registrationRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/downloads', downloadRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/outer-college-registrations', outerCollegeRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
