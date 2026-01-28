@@ -27,7 +27,7 @@ router.get('/', auth, async (req, res) => {
     }
 
     const registrations = await Registration.find(filter)
-      .populate('event', 'name eventDate department')
+      .populate('event', 'name eventDate cellsAndAssociation')
       .sort({ registrationDate: -1 });
 
     res.json({
@@ -86,7 +86,7 @@ router.get('/event/:eventId', auth, async (req, res) => {
 // @access  Private
 router.post('/', auth, async (req, res) => {
   try {
-    const { eventId, studentName, studentEmail, studentPhone, studentDepartment, studentYear } = req.body;
+    const { eventId, studentName, studentEmail, studentPhone, studentYear } = req.body;
 
     // Validate event exists and admin has access
     const event = await Event.findById(eventId);
@@ -131,7 +131,6 @@ router.post('/', auth, async (req, res) => {
       studentName,
       studentEmail,
       studentPhone,
-      studentDepartment,
       studentYear
     });
 

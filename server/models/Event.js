@@ -3,56 +3,78 @@ const mongoose = require('mongoose');
 const eventSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'Event name is required'],
-    trim: true
+    required: function() { return !this.isOuterCollegeEvent; },
+    trim: true,
+    default: 'Outer College Event'
   },
   organizingBody: {
     type: String,
-    required: [true, 'Organizing body is required'],
-    trim: true
+    required: function() { return !this.isOuterCollegeEvent; },
+    trim: true,
+    default: 'External'
   },
   eventType: {
     type: [String],
     enum: ['Hackathon', 'Workshop', 'Inter College', 'Intra College', 'Fun Event'],
-    required: [true, 'Event type is required']
+    default: ['Inter College']
   },
   registrationMode: {
     type: String,
-    enum: ['Platform', 'Google Forms'],
-    required: [true, 'Registration mode is required']
+    enum: ['Platform', 'Google Forms', 'Outer College'],
+    default: 'Platform'
+  },
+  isOuterCollegeEvent: {
+    type: Boolean,
+    default: false
+  },
+  hostCollegeName: {
+    type: String,
+    default: null,
+    trim: true
+  },
+  externalEventLink: {
+    type: String,
+    default: null
   },
   mode: {
     type: String,
     enum: ['Online', 'Offline'],
-    required: [true, 'Event mode is required']
+    default: 'Offline'
   },
   eventDate: {
     type: Date,
-    required: [true, 'Event date is required']
+    default: Date.now
+  },
+  registrationEndDate: {
+    type: String,
+    default: null
   },
   venue: {
     type: String,
     required: function() {
-      return this.mode === 'Offline';
+      return this.mode === 'Offline' && !this.isOuterCollegeEvent;
     },
-    trim: true
+    trim: true,
+    default: 'See poster for details'
   },
   eventCoordinator: {
     name: {
       type: String,
-      required: [true, 'Coordinator name is required'],
-      trim: true
+      required: function() { return !this.isOuterCollegeEvent; },
+      trim: true,
+      default: 'TBD'
     },
     contact: {
       type: String,
-      required: [true, 'Coordinator contact is required'],
-      trim: true
+      required: function() { return !this.isOuterCollegeEvent; },
+      trim: true,
+      default: 'N/A'
     }
   },
-  department: {
+  cellsAndAssociation: {
     type: String,
     enum: ['IT', 'IIC', 'EMDC'],
-    required: [true, 'Department is required']
+    default: 'IT'
   },
   posterImage: {
     type: String,
@@ -60,11 +82,11 @@ const eventSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: [true, 'Description is required']
+    default: 'See poster for details'
   },
   rules: {
     type: String,
-    required: [true, 'Rules are required']
+    default: 'See poster for details'
   },
   eventLink: {
     type: String,
@@ -80,11 +102,11 @@ const eventSchema = new mongoose.Schema({
   },
   registrationLink: {
     type: String,
-    required: [true, 'Registration link is required']
+    default: '#'
   },
   maxParticipants: {
     type: Number,
-    required: [true, 'Maximum participants is required'],
+    default: 100,
     min: [1, 'Maximum participants must be at least 1']
   },
   currentRegistrations: {
@@ -110,7 +132,7 @@ const eventSchema = new mongoose.Schema({
 });
 
 // Index for better query performance
-eventSchema.index({ department: 1, status: 1 });
+eventSchema.index({ cellsAndAssociation: 1, status: 1 });
 eventSchema.index({ eventDate: 1 });
 eventSchema.index({ createdBy: 1 });
 

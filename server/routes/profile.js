@@ -32,8 +32,7 @@ router.get('/', auth, async (req, res) => {
 router.put('/', [
   body('name').optional().trim().notEmpty().withMessage('Name cannot be empty'),
   body('email').optional().isEmail().normalizeEmail().withMessage('Please provide a valid email'),
-  body('clubName').optional().trim().notEmpty().withMessage('Club name cannot be empty'),
-  body('department').optional().isIn(['IT', 'IIC', 'EMDC', 'ALL']).withMessage('Invalid department')
+  body('cellsAndAssociation').optional().isIn(['IT', 'IIC', 'EMDC']).withMessage('Invalid Cells and Association')
 ], auth, async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -45,7 +44,7 @@ router.put('/', [
       });
     }
 
-    const { name, email, clubName, department } = req.body;
+    const { name, email, cellsAndAssociation } = req.body;
     const updateData = {};
 
     if (name) updateData.name = name;
@@ -65,8 +64,7 @@ router.put('/', [
       
       updateData.email = email;
     }
-    if (clubName) updateData.clubName = clubName;
-    if (department) updateData.department = department;
+    if (cellsAndAssociation) updateData.cellsAndAssociation = cellsAndAssociation;
 
     const updatedAdmin = await Admin.findByIdAndUpdate(
       req.admin._id,

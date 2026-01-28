@@ -42,6 +42,11 @@ const notificationSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Admin',
     required: true
+  },
+  cellsAndAssociation: {
+    type: String,
+    enum: ['IT', 'IIC', 'EMDC', 'OT'],
+    required: [true, 'Cells and Association is required']
   }
 }, {
   timestamps: true
