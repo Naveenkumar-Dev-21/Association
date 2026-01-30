@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
+import { getImageUrl } from '../../config/api';
 import { X, Upload, Calendar, Loader2, Image } from 'lucide-react';
 
 /**
@@ -16,7 +18,7 @@ const EditOuterCollegeModal = ({ isOpen, onClose, event, onSave, api }) => {
     if (event) {
       // Set existing poster preview
       if (event.posterImage) {
-        setPosterPreview(`http://localhost:5000${event.posterImage}`);
+        setPosterPreview(getImageUrl(event.posterImage));
       }
       // Set existing registration end date
       if (event.registrationEndDate) {

@@ -6,6 +6,7 @@ import ImageLightbox from '../../components/ImageLightbox';
 import DeleteEventModal from '../components/DeleteEventModal';
 import EditOuterCollegeModal from '../components/EditOuterCollegeModal';
 import toast from 'react-hot-toast';
+import { getImageUrl } from '../../config/api';
 import {
   Plus,
   Calendar,
@@ -51,13 +52,48 @@ const Events = () => {
   }, []);
 
   useEffect(() => {
+    // Refetch events when filters change for OT admins
+    if (admin?.cellsAndAssociation === 'OT') {
+      fetchEvents();
+    }
+  }, [cellsAndAssociationFilter, statusFilter]);
+
+  useEffect(() => {
     filterEvents();
-  }, [events, searchTerm, statusFilter, cellsAndAssociationFilter]);
+  }, [events, searchTerm]);
 
   const fetchEvents = async () => {
     try {
-      const response = await api.get('/events');
-      setEvents(response.data.data.events);
+      const params = new URLSearchParams();
+      
+      // Add cellsAndAssociation filter for OT admins
+      if (admin?.cellsAndAssociation === 'OT' && cellsAndAssociationFilter && cellsAndAssociationFilter !== 'all') {
+        params.append('cellsAndAssociation', cellsAndAssociationFilter);
+      }
+      
+      // Add status filter
+      if (statusFilter && statusFilter !== 'all') {
+        params.append('status', statusFilter);
+      }
+      
+      const url = params.toString() ? `/events?${params.toString()}` : '/events';
+      const response = await api.get(url);
+      const eventsData = response.data.data.events;
+      
+      // Debug: Log poster image data for each event
+      console.log('=== Events Poster Debug ===');
+      eventsData.forEach((event, index) => {
+        console.log(`Event ${index + 1}: ${event.name}`);
+        console.log(`  - posterImage: ${event.posterImage}`);
+        console.log(`  - posterImage type: ${typeof event.posterImage}`);
+        console.log(`  - posterImage exists: ${!!event.posterImage}`);
+        if (event.posterImage) {
+          console.log(`  - Full URL: ${getImageUrl(event.posterImage)}`);
+        }
+        console.log('---');
+      });
+      
+      setEvents(eventsData);
     } catch (error) {
       console.error('Error fetching events:', error);
     } finally {
@@ -86,22 +122,12 @@ const Events = () => {
   const filterEvents = () => {
     let filtered = events;
 
-    // Filter by search term
+    // Filter by search term only (backend handles other filters for OT admins)
     if (searchTerm) {
       filtered = filtered.filter(event =>
         event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         event.organizingBody.toLowerCase().includes(searchTerm.toLowerCase())
       );
-    }
-
-    // Filter by status (using effective status)
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter(event => getEffectiveStatus(event) === statusFilter);
-    }
-
-    // Filter by cells and association
-    if (cellsAndAssociationFilter !== 'all') {
-      filtered = filtered.filter(event => event.cellsAndAssociation === cellsAndAssociationFilter);
     }
 
     setFilteredEvents(filtered);
@@ -270,18 +296,36 @@ const Events = () => {
                   {/* Event Poster Image - Improved display */}
                   <div className="h-56 bg-gray-800 relative">
                     {event.posterImage ? (
-                      <img
-                        src={`http://localhost:5000${event.posterImage}`}
-                        alt={event.name}
-                        className="w-full h-full object-contain bg-gray-900 cursor-pointer hover:opacity-90 transition-opacity p-2"
-                        onClick={() => {
-                          setLightboxImage(`http://localhost:5000${event.posterImage}`);
-                          setLightboxAlt(event.name || 'Event Poster');
-                        }}
-                      />
+                      <>
+                        {console.log(`Rendering poster for ${event.name}:`, {
+                          posterImage: event.posterImage,
+                          fullUrl: getImageUrl(event.posterImage)
+                        })}
+                        <img
+                          src={getImageUrl(event.posterImage)}
+                          alt={event.name}
+                          className="w-full h-full object-contain bg-gray-900 cursor-pointer hover:opacity-90 transition-opacity p-2"
+                          onClick={() => {
+                            setLightboxImage(getImageUrl(event.posterImage));
+                            setLightboxAlt(event.name || 'Event Poster');
+                          }}
+                          onError={(e) => {
+                            console.error(`Failed to load image for ${event.name}:`, getImageUrl(event.posterImage));
+                            // Show default poster on error
+                            e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iIzNCODJGNiIvPgogIDx0ZXh0IHg9IjIwMCIgeT0iMzAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMzIiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5FVkVOVCBQT1NURVI8L3RleHQ+Cjwvc3ZnPg==';
+                          }}
+                          onLoad={() => {
+                            console.log(`Successfully loaded image for ${event.name}`);
+                          }}
+                        />
+                      </>
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-600 to-purple-700">
-                        <Image className="w-12 h-12 text-white/50" />
+                        <div className="text-center">
+                          <Image className="w-12 h-12 text-white/50 mx-auto mb-2" />
+                          <p className="text-white text-sm">No Poster</p>
+                          <p className="text-white/60 text-xs mt-1">Click edit to add</p>
+                        </div>
                       </div>
                     )}
                     {/* Status Badge Overlay */}

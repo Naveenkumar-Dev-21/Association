@@ -79,7 +79,7 @@ router.post('/register', [
 router.post('/google', async (req, res) => {
   try {
     const { token: googleToken } = req.body;
-    
+
     // Authorization Check via Env
     const verifyAssociation = (email) => {
       const associations = ['IT', 'IIC', 'EMDC', 'OT'];
@@ -94,18 +94,18 @@ router.post('/google', async (req, res) => {
 
     const { OAuth2Client } = require('google-auth-library');
     const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-    
+
     const ticket = await client.verifyIdToken({
-        idToken: googleToken,
-        audience: process.env.GOOGLE_CLIENT_ID,
+      idToken: googleToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
     });
     const payload = ticket.getPayload();
-    
+
     const { email, name, sub: googleId } = payload;
-    
+
     // Check if email is in any allowlist
     const matchedAssociation = verifyAssociation(email);
-    
+
     if (!matchedAssociation) {
       return res.status(401).json({
         success: false,
@@ -151,7 +151,11 @@ router.post('/google', async (req, res) => {
 
   } catch (error) {
     console.error('Google Auth Error:', error);
-    res.status(500).json({ success: false, message: 'Google Auth failed' });
+    res.status(500).json({
+      success: false,
+      message: 'Google Auth failed: ' + error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 });
 

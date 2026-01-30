@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Sidebar from '../components/Sidebar';
 import toast from 'react-hot-toast';
+import { getImageUrl } from '../../config/api';
 import {
   ArrowLeft,
   Save,
@@ -81,7 +82,7 @@ const EditEvent = () => {
       
       // Set poster preview if exists
       if (event.posterImage) {
-        setPosterPreview(`http://localhost:5000${event.posterImage}`);
+        setPosterPreview(getImageUrl(event.posterImage));
       }
     } catch (error) {
       console.error('Error fetching event:', error);

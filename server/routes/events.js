@@ -61,11 +61,11 @@ router.get('/public', async (req, res) => {
   try {
     const { category, type } = req.query;
     let filter = { isPublished: true };
-    
+
     if (category && category !== 'All') {
       filter.cellsAndAssociation = category;
     }
-    
+
     if (type && type !== 'All') {
       if (type === 'Outer College') {
         filter.isOuterCollegeEvent = true;
@@ -98,15 +98,16 @@ router.get('/', auth, async (req, res) => {
   try {
     const { cellsAndAssociation, status } = req.query;
     let filter = {};
-    
-    // If not OT, restrict to their own association
+
+    // If not OT, restrict to their own association by default
     if (req.admin.cellsAndAssociation !== 'OT') {
       filter.cellsAndAssociation = req.admin.cellsAndAssociation;
     } else if (cellsAndAssociation && cellsAndAssociation !== 'ALL') {
       // OT can filter by specific association
       filter.cellsAndAssociation = cellsAndAssociation;
     }
-    
+    // If OT and no specific filter, don't restrict - show all events
+
     if (status) {
       filter.status = status;
     }
@@ -174,15 +175,27 @@ router.post('/', auth, upload.fields([
   try {
     const eventData = req.body;
     const isOuterCollegeEvent = eventData.isOuterCollegeEvent === 'true' || eventData.isOuterCollegeEvent === true;
-    
+    console.log('=== Event Creation Debug ===');
+    console.log('Received Create Event Request:', { 
+      name: eventData.name, 
+      isOuterCollege: isOuterCollegeEvent,
+      organizingBody: eventData.organizingBody,
+      cellsAndAssociation: eventData.cellsAndAssociation,
+      adminCellsAndAssociation: req.admin.cellsAndAssociation,
+      receivedFields: Object.keys(eventData)
+    });
+
+    // Poster image is now required for all events
+    if (!req.files || !req.files.posterImage) {
+      return res.status(400).json({
+        success: false,
+        message: 'Poster image is required for all events'
+      });
+    }
+
     // For outer college events, only poster is required
     if (isOuterCollegeEvent) {
-      if (!req.files || !req.files.posterImage) {
-        return res.status(400).json({
-          success: false,
-          message: 'Poster image is required for outer college events'
-        });
-      }
+      // Poster already validated above
     } else {
       // Validate required fields for regular events
       const requiredFields = ['name', 'organizingBody', 'eventDate', 'description', 'rules'];
@@ -200,7 +213,7 @@ router.post('/', auth, upload.fields([
     if (req.files && req.files.posterImage) {
       eventData.posterImage = `/uploads/posters/${req.files.posterImage[0].filename}`;
     }
-    
+
     if (req.files && req.files.brochure) {
       eventData.brochure = `/uploads/brochures/${req.files.brochure[0].filename}`;
     }
@@ -224,14 +237,43 @@ router.post('/', auth, upload.fields([
     if (eventData.registrationEndDate) {
       eventData.registrationEndDate = new Date(eventData.registrationEndDate);
     }
+    // Normalize organizing body and cellsAndAssociation
+    const organizingBody = eventData.organizingBody;
+    if (organizingBody && ['IT', 'IIC', 'EMDC'].includes(organizingBody)) {
+      eventData.cellsAndAssociation = organizingBody;
+    } else if (req.admin.cellsAndAssociation !== 'OT') {
+      eventData.cellsAndAssociation = req.admin.cellsAndAssociation;
+      if (!eventData.organizingBody) {
+        eventData.organizingBody = req.admin.cellsAndAssociation;
+      }
+    } else {
+      // Handle OT admin case - set default if not provided
+      if (!eventData.cellsAndAssociation) {
+        eventData.cellsAndAssociation = 'IT'; // Default fallback
+      }
+      if (!eventData.organizingBody) {
+        eventData.organizingBody = eventData.cellsAndAssociation;
+      }
+    }
+
     eventData.createdBy = req.admin._id;
-    
+
+    console.log('Final event data before save:', {
+      name: eventData.name,
+      organizingBody: eventData.organizingBody,
+      cellsAndAssociation: eventData.cellsAndAssociation,
+      isOuterCollegeEvent: eventData.isOuterCollegeEvent,
+      isPublished: eventData.isPublished,
+      eventDate: eventData.eventDate,
+      status: eventData.status
+    });
+
     // For outer college events, set the flag and auto-publish
     if (isOuterCollegeEvent) {
       eventData.isOuterCollegeEvent = true;
       eventData.isPublished = true;
     }
-    
+
     // Handle isPublished field
     if (eventData.isPublished === 'true' || eventData.isPublished === true) {
       eventData.isPublished = true;
@@ -246,10 +288,15 @@ router.post('/', auth, upload.fields([
       data: { event }
     });
   } catch (error) {
-    console.error('Create event error:', error);
+    console.error('Create event error details:', {
+      message: error.message,
+      stack: error.stack,
+      errors: error.errors // Mongoose validation errors
+    });
     res.status(500).json({
       success: false,
-      message: error.message || 'Server error while creating event'
+      message: error.message || 'Server error while creating event',
+      details: process.env.NODE_ENV === 'development' ? error.errors : undefined
     });
   }
 });
@@ -280,12 +327,12 @@ router.put('/:id', auth, upload.fields([
     }
 
     const updateData = req.body;
-    
+
     // Add file paths if uploaded
     if (req.files.posterImage) {
       updateData.posterImage = `/uploads/posters/${req.files.posterImage[0].filename}`;
     }
-    
+
     if (req.files.brochure) {
       updateData.brochure = `/uploads/brochures/${req.files.brochure[0].filename}`;
     }
@@ -354,7 +401,7 @@ router.get('/:id/export', auth, async (req, res) => {
     if (event.isOuterCollegeEvent) {
       const OuterCollegeRegistration = require('../models/OuterCollegeRegistration');
       registrations = await OuterCollegeRegistration.find({ eventId: req.params.id });
-      
+
       csvHeaders = ['S.No', 'Participant Name', 'Roll Number', 'Department', 'Year of Study', 'Contact Number', 'Email', 'Mode', 'Status', 'Registration Date'];
       csvRows = registrations.map((reg, index) => [
         index + 1,
@@ -371,7 +418,7 @@ router.get('/:id/export', auth, async (req, res) => {
     } else {
       const Registration = require('../models/Registration');
       registrations = await Registration.find({ event: req.params.id });
-      
+
       csvHeaders = ['S.No', 'Student Name', 'Email', 'Phone', 'Year', 'Status', 'Registration Date'];
       csvRows = registrations.map((reg, index) => [
         index + 1,
@@ -402,7 +449,7 @@ router.get('/:id/export', auth, async (req, res) => {
     // Set response headers for CSV download
     res.setHeader('Content-Type', 'text/csv');
     res.setHeader('Content-Disposition', `attachment; filename="${event.name.replace(/[^a-z0-9]/gi, '_')}_registrations.csv"`);
-    
+
     res.send(csvContent);
   } catch (error) {
     console.error('Export event registrations error:', error);

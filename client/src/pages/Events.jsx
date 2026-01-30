@@ -5,7 +5,9 @@ import axios from 'axios';
 import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
 import ImageLightbox from '../components/ImageLightbox';
+import EventDetailsModal from '../components/EventDetailsModal';
 import toast from 'react-hot-toast';
+import { getImageUrl } from '../config/api';
 
 const API_URL = '/api';
 
@@ -18,6 +20,10 @@ const Events = () => {
     // Image lightbox state
     const [lightboxImage, setLightboxImage] = useState(null);
     const [lightboxAlt, setLightboxAlt] = useState('');
+
+    // Event details modal state
+    const [showEventDetails, setShowEventDetails] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState(null);
 
     // Determine the category based on URL path
     const getCategoryFromPath = () => {
@@ -61,6 +67,19 @@ const Events = () => {
             if (response.data.success) {
                 let filteredEvents = response.data.data.events;
                 
+                // Debug: Log poster image data for each event
+                console.log('=== User Events Poster Debug ===');
+                filteredEvents.forEach((event, index) => {
+                    console.log(`Event ${index + 1}: ${event.name}`);
+                    console.log(`  - posterImage: ${event.posterImage}`);
+                    console.log(`  - posterImage type: ${typeof event.posterImage}`);
+                    console.log(`  - posterImage exists: ${!!event.posterImage}`);
+                    if (event.posterImage) {
+                        console.log(`  - Full URL: ${getImageUrl(event.posterImage)}`);
+                    }
+                    console.log('---');
+                });
+                
                 // Always exclude outer college events from this page
                 filteredEvents = filteredEvents.filter(event => !event.isOuterCollegeEvent);
                 
@@ -102,6 +121,16 @@ const Events = () => {
             month: 'short',
             year: 'numeric'
         });
+    };
+
+    const handleViewDetails = (event) => {
+        setSelectedEvent(event);
+        setShowEventDetails(true);
+    };
+
+    const handleCloseDetails = () => {
+        setShowEventDetails(false);
+        setSelectedEvent(null);
     };
 
     return (
@@ -156,17 +185,24 @@ const Events = () => {
                                     <div className="h-48 bg-gray-200 relative">
                                         {event.posterImage ? (
                                             <img 
-                                                src={`http://localhost:5000${event.posterImage}`} 
+                                                src={getImageUrl(event.posterImage)} 
                                                 alt={event.name}
                                                 className="w-full h-full object-contain bg-gray-100 cursor-pointer hover:opacity-90 transition-opacity"
                                                 onClick={() => {
-                                                    setLightboxImage(`http://localhost:5000${event.posterImage}`);
+                                                    setLightboxImage(getImageUrl(event.posterImage));
                                                     setLightboxAlt(event.name || 'Event Poster');
+                                                }}
+                                                onError={(e) => {
+                                                    // Show default poster on error
+                                                    e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iIzNCODJGNiIvPgogIDx0ZXh0IHg9IjIwMCIgeT0iMzAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMzIiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5FVkVOVCBQT1NURVI8L3RleHQ+Cjwvc3ZnPg==';
                                                 }}
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-500 to-blue-600">
-                                                <span className="text-white text-xl font-bold">{event.name?.charAt(0) || 'E'}</span>
+                                                <div className="text-center">
+                                                    <span className="text-white text-xl font-bold">{event.name?.charAt(0) || 'E'}</span>
+                                                    <p className="text-white/80 text-xs mt-1">No Poster</p>
+                                                </div>
                                             </div>
                                         )}
                                         
@@ -244,6 +280,7 @@ const Events = () => {
                                                     className="w-full"
                                                     disabled={registrationEnded}
                                                     variant={registrationEnded ? 'outline' : 'primary'}
+                                                    onClick={() => handleViewDetails(event)}
                                                 >
                                                     {registrationEnded ? 'Registration Closed' : 'View Details'}
                                                 </Button>
@@ -286,6 +323,13 @@ const Events = () => {
                 }}
                 imageSrc={lightboxImage}
                 imageAlt={lightboxAlt}
+            />
+
+            {/* Event Details Modal */}
+            <EventDetailsModal
+                isOpen={showEventDetails}
+                onClose={handleCloseDetails}
+                event={selectedEvent}
             />
         </div>
     );

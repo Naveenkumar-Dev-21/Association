@@ -7,7 +7,7 @@ import { LogIn } from 'lucide-react';
 import Orb from '../components/Orb';
 
 const Login = () => {
-  const { googleLogin } = useAuth();
+  const { googleLogin, isTestingMode } = useAuth();
   const navigate = useNavigate();
 
   const handleSuccess = async (credentialResponse) => {
@@ -51,17 +51,16 @@ const Login = () => {
         </div>
 
         <div className="mt-8 space-y-6">
-          <div className="flex justify-center mt-6 transform transition-transform hover:scale-105 duration-200">
+          <div className="flex flex-col items-center justify-center mt-6 space-y-4">
             <GoogleLogin
               onSuccess={handleSuccess}
               onError={handleError}
-              useOneTap
               theme="filled_black"
               shape="pill"
               text="continue_with"
             />
           </div>
-          
+
           <p className="text-xs text-center text-gray-400/60 mt-6 font-light">
             By signing in, you agree to access the dashboard if your email is authorized.
           </p>

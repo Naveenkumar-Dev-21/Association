@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, ExternalLink, Clock } from 'lucide-react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
+import { getImageUrl } from '../config/api';
+import { Calendar, ExternalLink, Clock } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
 import ParticipationModal from '../components/ParticipationModal';
 import ImageLightbox from '../components/ImageLightbox';
-import toast from 'react-hot-toast';
 
 const API_URL = '/api';
 
@@ -129,11 +130,11 @@ const OuterCollegeEvents = () => {
                                     <div className="relative">
                                         {event.posterImage ? (
                                             <img 
-                                                src={`http://localhost:5000${event.posterImage}`} 
+                                                src={getImageUrl(event.posterImage)} 
                                                 alt="Event Poster"
                                                 className="w-full h-auto max-h-96 object-contain bg-gray-100 cursor-pointer hover:opacity-90 transition-opacity"
                                                 onClick={() => {
-                                                    setLightboxImage(`http://localhost:5000${event.posterImage}`);
+                                                    setLightboxImage(getImageUrl(event.posterImage));
                                                     setLightboxAlt('Event Poster');
                                                 }}
                                             />

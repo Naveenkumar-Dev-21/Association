@@ -224,10 +224,10 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await api.get('/auth/me');
       const admin = response.data.data.admin;
-      
+
       localStorage.setItem('admin', JSON.stringify(admin));
       dispatch({ type: AUTH_ACTIONS.LOAD_ADMIN, payload: admin });
-      
+
       return true;
     } catch (error) {
       logout();
@@ -243,6 +243,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     checkAuth,
     api,
+    isTestingMode: TESTING_MODE,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

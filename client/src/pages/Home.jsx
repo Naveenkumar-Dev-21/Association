@@ -9,6 +9,7 @@ import {
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Button from '../components/ui/Button';
+import { getImageUrl } from '../config/api';
 
 const API_URL = '/api';
 
@@ -163,7 +164,7 @@ const Home = () => {
                                             <div className="relative h-64 md:h-96">
                                                 {upcomingEvents[currentSlide]?.posterImage ? (
                                                     <img
-                                                        src={`http://localhost:5000${upcomingEvents[currentSlide].posterImage}`}
+                                                        src={getImageUrl(upcomingEvents[currentSlide].posterImage)}
                                                         alt={upcomingEvents[currentSlide].name}
                                                         className="w-full h-full object-cover"
                                                     />
