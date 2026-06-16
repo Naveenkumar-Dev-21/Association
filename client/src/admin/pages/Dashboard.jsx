@@ -81,11 +81,11 @@ const Dashboard = () => {
   // Navigation handlers
   const handleViewAllEvents = () => navigate('/admin/events');
   const handleViewAllNotifications = () => navigate('/admin/notifications');
-  const handleViewEvent = (eventId) => navigate(`/admin/events`);
-  const handleEditEvent = (eventId) => navigate(`/admin/events`);
+  const handleViewEvent = (eventId) => navigate(`/admin/events/edit/${eventId}`);
+  const handleEditEvent = (eventId) => navigate(`/admin/events/edit/${eventId}`);
   const handleCreateEvent = () => navigate('/admin/events/create');
   const handleSendNotification = () => navigate('/admin/notifications');
-  
+
   const handleRefresh = async () => {
     setIsRefreshing(true);
     await fetchDashboardData();
@@ -134,14 +134,14 @@ const Dashboard = () => {
   // Animated stat card component
   const AnimatedStatCard = ({ stat, index }) => {
     const animatedValue = useCountUp(stat.value, 1500);
-    
+
     return (
-      <div 
+      <div
         className="bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-xl shadow-lg p-6 hover:border-blue-500/30 hover:scale-105 transition-all duration-300 animate-fade-in-up"
         style={{ animationDelay: `${index * 100}ms`, opacity: 0 }}
       >
         <div className="flex items-center">
-          <div className={`${stat.bgColor} bg-opacity-20 p-3 rounded-lg border border-opacity-30 group-hover:scale-110 transition-transform duration-300`} style={{borderColor: stat.color}}>
+          <div className={`${stat.bgColor} bg-opacity-20 p-3 rounded-lg border border-opacity-30 group-hover:scale-110 transition-transform duration-300`} style={{ borderColor: stat.color }}>
             <stat.icon className={`h-6 w-6 ${stat.textColor}`} />
           </div>
           <div className="ml-4">
@@ -175,8 +175,8 @@ const Dashboard = () => {
               {admin?.cellsAndAssociation} Dashboard
             </h1>
             <p className="text-gray-400 mt-2 font-sans">
-              Welcome back, {admin?.name}! 
-              {admin?.cellsAndAssociation === 'OT' 
+              Welcome back, {admin?.name}!
+              {admin?.cellsAndAssociation === 'OT'
                 ? " Manage your overall tasks here."
                 : admin?.cellsAndAssociation === 'IIC'
                   ? " Manage your IIC innovation activities."
@@ -217,7 +217,7 @@ const Dashboard = () => {
             <div className="p-6 border-b border-gray-800">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-white">Recent Events</h2>
-                <button 
+                <button
                   onClick={handleViewAllEvents}
                   className="text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors"
                 >
@@ -232,13 +232,12 @@ const Dashboard = () => {
                     <div key={event._id} className="flex items-center justify-between p-3 bg-gray-800/50 border border-gray-700 rounded-lg hover:border-blue-500/30 transition-all">
                       <div className="flex-1">
                         <h3 className="text-sm font-medium text-white">{event.name}</h3>
-                        <p className="text-xs text-gray-400">{event.department} • {event.eventType.join(', ')}</p>
+                        <p className="text-xs text-gray-400">{event.cellsAndAssociation} • {event.eventType.join(', ')}</p>
                         <div className="flex items-center mt-1">
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                            event.status === 'Ongoing' ? 'bg-green-100/10 text-green-400 border border-green-500/20' :
-                            event.status === 'Upcoming' ? 'bg-yellow-100/10 text-yellow-400 border border-yellow-500/20' :
-                            'bg-gray-100/10 text-gray-400 border border-gray-500/20'
-                          }`}>
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${event.status === 'Ongoing' ? 'bg-green-100/10 text-green-400 border border-green-500/20' :
+                              event.status === 'Upcoming' ? 'bg-yellow-100/10 text-yellow-400 border border-yellow-500/20' :
+                                'bg-gray-100/10 text-gray-400 border border-gray-500/20'
+                            }`}>
                             {event.status}
                           </span>
                           <span className="ml-2 text-xs text-gray-400">
@@ -247,9 +246,9 @@ const Dashboard = () => {
                         </div>
                         {/* Progress Bar */}
                         <div className="mt-3 w-full bg-gray-800 rounded-full h-1.5 overflow-hidden">
-                          <div 
+                          <div
                             className="bg-blue-500 h-full rounded-full transition-all duration-1000 ease-out"
-                            style={{ 
+                            style={{
                               width: `${Math.min((event.currentRegistrations / event.maxParticipants) * 100, 100)}%`,
                               boxShadow: '0 0 10px rgba(59, 130, 246, 0.5)'
                             }}
@@ -257,14 +256,14 @@ const Dashboard = () => {
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <button 
+                        <button
                           onClick={() => handleViewEvent(event._id)}
                           className="p-1 text-gray-400 hover:text-blue-400 transition-colors"
                           title="View Event"
                         >
                           <Eye className="h-4 w-4" />
                         </button>
-                        <button 
+                        <button
                           onClick={() => handleEditEvent(event._id)}
                           className="p-1 text-gray-400 hover:text-green-400 transition-colors"
                           title="Edit Event"
@@ -279,7 +278,7 @@ const Dashboard = () => {
                 <div className="text-center py-8">
                   <Calendar className="h-12 w-12 text-gray-600 mx-auto mb-4" />
                   <p className="text-gray-400">No events yet</p>
-                  <button 
+                  <button
                     onClick={handleCreateEvent}
                     className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-all"
                   >
@@ -296,7 +295,7 @@ const Dashboard = () => {
             <div className="p-6 border-b border-gray-800">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-white">Recent Notifications</h2>
-                <button 
+                <button
                   onClick={handleViewAllNotifications}
                   className="text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors"
                 >
@@ -317,9 +316,8 @@ const Dashboard = () => {
                           <h3 className="text-sm font-medium text-white">{notification.title}</h3>
                           <p className="text-xs text-gray-400 mt-1">{notification.message}</p>
                           <div className="flex items-center mt-2">
-                            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                              notification.isSent ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                            }`}>
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${notification.isSent ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                              }`}>
                               {notification.isSent ? 'Sent' : 'Scheduled'}
                             </span>
                             <span className="ml-2 text-xs text-gray-400">
@@ -335,7 +333,7 @@ const Dashboard = () => {
                 <div className="text-center py-8">
                   <Bell className="h-12 w-12 text-gray-600 mx-auto mb-4" />
                   <p className="text-gray-400">No notifications sent yet</p>
-                  <button 
+                  <button
                     onClick={handleSendNotification}
                     className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-all"
                   >
@@ -352,21 +350,21 @@ const Dashboard = () => {
         <div className="mt-8 bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-xl shadow-lg p-6">
           <h2 className="text-lg font-semibold text-white mb-4">Quick Actions</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button 
+            <button
               onClick={handleCreateEvent}
               className="flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-xl text-white bg-blue-600 hover:bg-blue-700 hover:scale-[1.02] transition-all duration-200 shadow-lg shadow-blue-900/20"
             >
               <Plus className="h-4 w-4 mr-2" />
               Create New Event
             </button>
-            <button 
+            <button
               onClick={handleSendNotification}
               className="flex items-center justify-center px-4 py-3 bg-gray-800/50 border border-gray-700 text-sm font-medium rounded-xl text-gray-300 hover:bg-gray-800 hover:text-white hover:scale-[1.02] transition-all duration-200"
             >
               <Bell className="h-4 w-4 mr-2" />
               Send Notification
             </button>
-            <button 
+            <button
               onClick={() => navigate('/admin/downloads')}
               className="flex items-center justify-center px-4 py-3 bg-gray-800/50 border border-gray-700 text-sm font-medium rounded-xl text-gray-300 hover:bg-gray-800 hover:text-white hover:scale-[1.02] transition-all duration-200"
             >

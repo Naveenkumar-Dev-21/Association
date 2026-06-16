@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { Search, Filter, Calendar, MapPin, Clock } from 'lucide-react';
 import axios from 'axios';
 import Button from '../components/ui/Button';
@@ -60,17 +60,17 @@ const Events = () => {
             const response = await axios.get(`${API_URL}/events/public`);
             if (response.data.success) {
                 let filteredEvents = response.data.data.events;
-                
+
                 // Always exclude outer college events from this page
                 filteredEvents = filteredEvents.filter(event => !event.isOuterCollegeEvent);
-                
+
                 // Filter by category if on a specific category page
                 if (currentCategory) {
                     filteredEvents = filteredEvents.filter(
                         event => event.cellsAndAssociation === currentCategory
                     );
                 }
-                
+
                 setEvents(filteredEvents);
             }
         } catch (error) {
@@ -144,19 +144,18 @@ const Events = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filteredEvents.map(event => {
                             const registrationEnded = isRegistrationEnded(event);
-                            
+
                             return (
-                                <div 
-                                    key={event._id} 
-                                    className={`bg-white rounded-xl shadow-sm border overflow-hidden hover:shadow-lg transition-shadow ${
-                                        registrationEnded ? 'border-gray-300 opacity-80' : 'border-gray-100'
-                                    }`}
+                                <div
+                                    key={event._id}
+                                    className={`bg-white rounded-xl shadow-sm border overflow-hidden hover:shadow-lg transition-shadow ${registrationEnded ? 'border-gray-300 opacity-80' : 'border-gray-100'
+                                        }`}
                                 >
                                     {/* Event Image */}
                                     <div className="h-48 bg-gray-200 relative">
                                         {event.posterImage ? (
-                                            <img 
-                                                src={`http://localhost:5000${event.posterImage}`} 
+                                            <img
+                                                src={`http://localhost:5000${event.posterImage}`}
                                                 alt={event.name}
                                                 className="w-full h-full object-contain bg-gray-100 cursor-pointer hover:opacity-90 transition-opacity"
                                                 onClick={() => {
@@ -169,11 +168,11 @@ const Events = () => {
                                                 <span className="text-white text-xl font-bold">{event.name?.charAt(0) || 'E'}</span>
                                             </div>
                                         )}
-                                        
+
                                         {/* Badges */}
                                         <div className="absolute top-3 left-3 flex gap-2">
                                             <Badge className="bg-blue-500/80 text-white text-xs backdrop-blur-sm">
-                                                {event.cellsAndAssociation}
+                                                {event.cellsAndAssociation === 'IT' ? 'IT Association' : event.cellsAndAssociation}
                                             </Badge>
                                             {registrationEnded && (
                                                 <Badge className="bg-orange-500 text-white text-xs">
@@ -182,33 +181,33 @@ const Events = () => {
                                             )}
                                         </div>
                                     </div>
-                                    
+
                                     {/* Event Details */}
                                     <div className="p-4">
                                         <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-1">
                                             {event.name}
                                         </h3>
-                                        
+
                                         <div className="space-y-2 text-sm text-gray-500">
                                             {/* Show Registration End Date prominently */}
                                             {event.registrationEndDate && (
                                                 <div className={`flex items-center ${registrationEnded ? 'text-orange-600' : 'text-green-600'}`}>
                                                     <Clock className="w-4 h-4 mr-2" />
                                                     <span>
-                                                        {registrationEnded 
+                                                        {registrationEnded
                                                             ? `Registration ended ${formatDate(event.registrationEndDate)}`
                                                             : `Register by ${formatDate(event.registrationEndDate)}`
                                                         }
                                                     </span>
                                                 </div>
                                             )}
-                                            
+
                                             {/* Event Date */}
                                             <div className="flex items-center">
                                                 <Calendar className="w-4 h-4 mr-2 text-blue-500" />
                                                 <span>Event: {formatDate(event.eventDate)}</span>
                                             </div>
-                                            
+
                                             {/* Venue */}
                                             {event.venue && (
                                                 <div className="flex items-center">
@@ -216,37 +215,38 @@ const Events = () => {
                                                     {event.venue}
                                                 </div>
                                             )}
-                                            
+
                                             {/* Description */}
                                             {event.description && (
                                                 <p className="text-gray-600 line-clamp-2 mt-2">{event.description}</p>
                                             )}
                                         </div>
-                                        
+
                                         {/* Action Button */}
                                         <div className="mt-4">
                                             {event.registrationLink ? (
-                                                <a 
+                                                <a
                                                     href={event.registrationLink}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className={`block w-full text-center py-2 px-4 rounded-lg font-medium transition-colors ${
-                                                        registrationEnded 
-                                                            ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                                                            : 'bg-blue-600 text-white hover:bg-blue-700'
-                                                    }`}
+                                                    className={`block w-full text-center py-2 px-4 rounded-lg font-medium transition-colors ${registrationEnded
+                                                        ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                                                        : 'bg-blue-600 text-white hover:bg-blue-700'
+                                                        }`}
                                                     onClick={(e) => registrationEnded && e.preventDefault()}
                                                 >
                                                     {registrationEnded ? 'Registration Closed' : 'Register Now'}
                                                 </a>
                                             ) : (
-                                                <Button 
-                                                    className="w-full"
-                                                    disabled={registrationEnded}
-                                                    variant={registrationEnded ? 'outline' : 'primary'}
-                                                >
-                                                    {registrationEnded ? 'Registration Closed' : 'View Details'}
-                                                </Button>
+                                                <Link to={`/events/${event._id}`} className="block">
+                                                    <Button
+                                                        className="w-full"
+                                                        disabled={registrationEnded}
+                                                        variant={registrationEnded ? 'outline' : 'primary'}
+                                                    >
+                                                        {registrationEnded ? 'Registration Closed' : 'View Details'}
+                                                    </Button>
+                                                </Link>
                                             )}
                                         </div>
                                     </div>
@@ -259,7 +259,7 @@ const Events = () => {
                         <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                         <h3 className="text-lg font-medium text-gray-900 mb-2">No events found</h3>
                         <p className="text-gray-500">
-                            {searchTerm 
+                            {searchTerm
                                 ? 'Try adjusting your search term'
                                 : 'Check back later for upcoming events'}
                         </p>

@@ -29,7 +29,7 @@ import AdminProfile from './admin/pages/Profile';
 import LoadingSpinner from './admin/components/LoadingSpinner';
 
 // TESTING MODE - Set to true to bypass authentication
-const TESTING_MODE = true;
+const TESTING_MODE = false;
 
 // Protected route component for Admin
 const ProtectedRoute = ({ children }) => {
@@ -150,12 +150,12 @@ function App() {
                         <Layout>
                             <Routes>
                                 <Route path="/" element={<Home />} />
-                                <Route path="/events" element={<Events />} />
-                                <Route path="/events/:id" element={<EventDetail />} />
                                 <Route path="/events/iic" element={<Events />} />
                                 <Route path="/events/emdc" element={<Events />} />
                                 <Route path="/events/it" element={<Events />} />
                                 <Route path="/events/outer-college" element={<OuterCollegeEvents />} />
+                                <Route path="/events/:id" element={<EventDetail />} />
+                                <Route path="/events" element={<Events />} />
                                 <Route path="/about" element={<About />} />
                                 <Route path="/members" element={<Members />} />
                                 <Route path="/members/iic" element={<Members />} />

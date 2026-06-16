@@ -33,7 +33,7 @@ const Sidebar = () => {
       title: 'Event',
       icon: Calendar,
       path: '/admin/events',
-      hasSubmenu: admin?.cellsAndAssociation === 'OT',
+      hasSubmenu: admin?.cellsAndAssociation === 'OT' || admin?.role === 'super_admin',
       submenu: [
         { title: 'IIC / EMDC', path: '/admin/events?cellsAndAssociation=IIC' },
         { title: 'IT', path: '/admin/events?cellsAndAssociation=IT' },
@@ -63,9 +63,8 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`bg-gray-900 border-r border-gray-800 shadow-2xl transition-all duration-300 ease-in-out ${
-        isCollapsed ? 'w-16' : 'w-64'
-      } min-h-screen flex flex-col`}
+      className={`bg-gray-900 border-r border-gray-800 shadow-2xl transition-all duration-300 ease-in-out ${isCollapsed ? 'w-16' : 'w-64'
+        } min-h-screen flex flex-col`}
     >
       {/* Header */}
       <div className="p-4 border-b border-gray-800">
@@ -98,11 +97,10 @@ const Sidebar = () => {
                 <div>
                   <button
                     onClick={() => setEventsExpanded(!eventsExpanded)}
-                    className={`w-full flex items-center justify-between p-2 rounded-lg transition-colors ${
-                      isActive(item.path) || location.pathname.startsWith('/events')
+                    className={`w-full flex items-center justify-between p-2 rounded-lg transition-colors ${isActive(item.path) || location.pathname.startsWith('/events')
                         ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30'
                         : 'text-gray-300 hover:bg-gray-800'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center">
                       <item.icon className="h-5 w-5" />
@@ -124,11 +122,10 @@ const Sidebar = () => {
                         <li key={subItem.title}>
                           <Link
                             to={subItem.path}
-                            className={`block p-2 text-sm rounded-lg transition-colors ${
-                              isActive(subItem.path)
+                            className={`block p-2 text-sm rounded-lg transition-colors ${isActive(subItem.path)
                                 ? 'bg-blue-600/20 text-blue-400'
                                 : 'text-gray-400 hover:bg-gray-800'
-                            }`}
+                              }`}
                           >
                             {subItem.title}
                           </Link>
@@ -140,11 +137,10 @@ const Sidebar = () => {
               ) : (
                 <Link
                   to={item.path}
-                  className={`flex items-center p-2 rounded-lg transition-colors ${
-                    isActive(item.path)
+                  className={`flex items-center p-2 rounded-lg transition-colors ${isActive(item.path)
                       ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30'
                       : 'text-gray-300 hover:bg-gray-800'
-                  }`}
+                    }`}
                 >
                   <item.icon className="h-5 w-5" />
                   {!isCollapsed && (

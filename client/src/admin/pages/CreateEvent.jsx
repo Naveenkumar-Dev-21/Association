@@ -18,7 +18,7 @@ import {
 
 const CreateEvent = () => {
   const navigate = useNavigate();
-  const { api } = useAuth();
+  const { api, admin } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [showRegistrationModal, setShowRegistrationModal] = useState(true);
@@ -27,28 +27,28 @@ const CreateEvent = () => {
   const [formData, setFormData] = useState({
     // Registration Type
     registrationType: '',
-    
+
     // Outer College Event Data
     outerCollegeData: null,
-    
+
     // Department Type
     departmentType: '',
-    
+
     // Event Categories
     eventCategories: {
       technical: [],
       nonTechnical: []
     },
-    
+
     // Custom Events
     customEvents: {
       technical: [],
       nonTechnical: []
     },
-    
+
     // Event Configurations (for dynamic event pages)
     eventConfigurations: {},
-    
+
     // Section A - Event Foundation
     name: '',
     organizingBody: '',
@@ -61,7 +61,7 @@ const CreateEvent = () => {
       contact: ''
     },
     cellsAndAssociation: 'IT',
-    
+
     // Section B - Event Info & Usability (Platform only)
     posterImage: null,
     description: '',
@@ -77,7 +77,7 @@ const CreateEvent = () => {
   useEffect(() => {
     const savedFormData = localStorage.getItem('createEventFormData');
     const savedRegistrationType = localStorage.getItem('createEventRegistrationType');
-    
+
     if (savedFormData) {
       try {
         const parsedData = JSON.parse(savedFormData);
@@ -85,14 +85,17 @@ const CreateEvent = () => {
       } catch (error) {
         console.error('Error parsing saved form data:', error);
       }
+    } else if (admin?.cellsAndAssociation && admin.cellsAndAssociation !== 'OT') {
+      // Default to admin's association if no saved data (and not OT)
+      setFormData(prev => ({ ...prev, cellsAndAssociation: admin.cellsAndAssociation }));
     }
-    
+
     if (savedRegistrationType) {
       setRegistrationType(savedRegistrationType);
       setShowRegistrationModal(false);
     }
-  }, []);
-  
+  }, [admin]);
+
   // Save form data to localStorage whenever it changes
   useEffect(() => {
     if (registrationType || formData.name || formData.organizingBody) {
@@ -107,7 +110,7 @@ const CreateEvent = () => {
   const handleRegistrationTypeSelect = (type) => {
     setRegistrationType(type);
     setFormData(prev => ({ ...prev, registrationType: type }));
-    
+
     if (type === 'outer') {
       // Show Outer College modal for external event registration
       setShowRegistrationModal(false);
@@ -122,19 +125,19 @@ const CreateEvent = () => {
     setIsLoading(true);
     try {
       const formDataToSend = new FormData();
-      
+
       // Add the poster image
       formDataToSend.append('posterImage', outerCollegeData.posterImage);
-      
+
       // Add registration end date
       if (outerCollegeData.registrationEndDate) {
         formDataToSend.append('registrationEndDate', new Date(outerCollegeData.registrationEndDate).toISOString());
       }
-      
+
       // Mark as outer college event
       formDataToSend.append('isOuterCollegeEvent', 'true');
       formDataToSend.append('registrationMode', 'Outer College');
-      
+
       // Add minimal required fields with defaults
       formDataToSend.append('name', 'Outer College Event');
       formDataToSend.append('organizingBody', 'External');
@@ -159,7 +162,7 @@ const CreateEvent = () => {
       // Clear saved form data
       localStorage.removeItem('createEventFormData');
       localStorage.removeItem('createEventRegistrationType');
-      
+
       toast.success('Outer college event created successfully!');
       navigate('/admin/events');
     } catch (error) {
@@ -185,25 +188,25 @@ const CreateEvent = () => {
     setFormData({
       // Registration Type
       registrationType: '',
-      
+
       // Outer College Event Data
       outerCollegeData: null,
-      
+
       // Department Type
       departmentType: '',
-      
+
       // Event Categories
       eventCategories: {
         technical: [],
         nonTechnical: []
       },
-      
+
       // Custom Events
       customEvents: {
         technical: [],
         nonTechnical: []
       },
-      
+
       // Section A - Event Foundation
       name: '',
       organizingBody: '',
@@ -216,10 +219,10 @@ const CreateEvent = () => {
         contact: ''
       },
       cellsAndAssociation: 'IT',
-      
+
       // Event Configurations
       eventConfigurations: {},
-      
+
       // Section B - Event Info & Usability (Platform only)
       posterImage: null,
       description: '',
@@ -248,7 +251,7 @@ const CreateEvent = () => {
   const handleEventToggle = (event, categoryType) => {
     setFormData(prev => {
       const newEventCategories = { ...prev.eventCategories };
-      
+
       if (newEventCategories[categoryType].includes(event)) {
         // Remove event from category
         newEventCategories[categoryType] = newEventCategories[categoryType].filter(e => e !== event);
@@ -256,7 +259,7 @@ const CreateEvent = () => {
         // Add event to category
         newEventCategories[categoryType] = [...newEventCategories[categoryType], event];
       }
-      
+
       return { ...prev, eventCategories: newEventCategories };
     });
   };
@@ -264,14 +267,14 @@ const CreateEvent = () => {
   const handleAddCustomEvent = (categoryType, eventName) => {
     setFormData(prev => {
       const customEvents = { ...prev.customEvents };
-      
+
       // Check for duplicates
       const allCustomEvents = [...customEvents.technical, ...customEvents.nonTechnical];
       if (allCustomEvents.includes(eventName)) {
         toast.error('Event already exists');
         return prev;
       }
-      
+
       customEvents[categoryType] = [...customEvents[categoryType], eventName];
       return { ...prev, customEvents };
     });
@@ -281,10 +284,10 @@ const CreateEvent = () => {
     setFormData(prev => {
       const customEvents = { ...prev.customEvents };
       const eventCategories = { ...prev.eventCategories };
-      
+
       customEvents[categoryType] = customEvents[categoryType].filter(e => e !== eventName);
       eventCategories[categoryType] = eventCategories[categoryType].filter(e => e !== eventName);
-      
+
       return { ...prev, customEvents, eventCategories };
     });
   };
@@ -301,17 +304,17 @@ const CreateEvent = () => {
 
   const getSelectedEvents = () => {
     const events = [];
-    
+
     // Add technical events
     formData.eventCategories.technical.forEach(event => {
       events.push({ name: event, type: 'technical' });
     });
-    
+
     // Add non-technical events
     formData.eventCategories.nonTechnical.forEach(event => {
       events.push({ name: event, type: 'nonTechnical' });
     });
-    
+
     return events;
   };
 
@@ -338,7 +341,7 @@ const CreateEvent = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    
+
     // Mobile number validation for coordinator contact
     if (name === 'eventCoordinator.contact') {
       // Only allow numbers, +, -, and spaces
@@ -346,10 +349,10 @@ const CreateEvent = () => {
       if (!mobilePattern.test(value)) {
         return; // Don't update if invalid characters
       }
-      
+
       // Remove all non-digit characters for validation
       const digitsOnly = value.replace(/\D/g, '');
-      
+
       // Check if it's a valid mobile number (exactly 10 digits)
       if (digitsOnly.length > 0 && digitsOnly.length !== 10) {
         // Still allow typing but don't allow more than 10 digits
@@ -358,7 +361,7 @@ const CreateEvent = () => {
         }
       }
     }
-    
+
     if (name.includes('.')) {
       const [parent, child] = name.split('.');
       setFormData(prev => ({
@@ -370,6 +373,14 @@ const CreateEvent = () => {
       }));
     } else if (name === 'departmentType') {
       handleDepartmentTypeChange(value);
+    } else if (name === 'organizingBody') {
+      // Sync cellsAndAssociation with organizingBody if it's a core one
+      const coreAssociations = ['IT', 'IIC', 'EMDC'];
+      setFormData(prev => ({
+        ...prev,
+        organizingBody: value,
+        cellsAndAssociation: coreAssociations.includes(value.toUpperCase()) ? value.toUpperCase() : prev.cellsAndAssociation
+      }));
     } else if (type === 'checkbox') {
       setFormData(prev => ({
         ...prev,
@@ -402,44 +413,44 @@ const CreateEvent = () => {
     switch (step) {
       case 1:
         // Common validations for both registration types
-        if (!formData.name || !formData.organizingBody || !formData.eventDate || 
-            !formData.eventCoordinator.name || !formData.eventCoordinator.contact) {
+        if (!formData.name || !formData.organizingBody || !formData.eventDate ||
+          !formData.eventCoordinator.name || !formData.eventCoordinator.contact) {
           toast.error('Please fill in all required fields');
           return false;
         }
-        
+
         // Validate mobile number
         if (!validateMobileNumber(formData.eventCoordinator.contact)) {
           toast.error('Please enter a valid 10-digit mobile number');
           return false;
         }
-        
+
         // Validate mandatory event details fields
         if (!formData.posterImage) {
           toast.error('Please upload an event poster');
           return false;
         }
-        
+
         if (!formData.description || formData.description.trim() === '') {
           toast.error('Please enter event description');
           return false;
         }
-        
+
         if (!formData.rules || formData.rules.trim() === '') {
           toast.error('Please enter event rules');
           return false;
         }
-        
+
         if (!formData.whatsappGroupLink || formData.whatsappGroupLink.trim() === '') {
           toast.error('Please enter WhatsApp group link');
           return false;
         }
-        
+
         if (!formData.registrationLink || formData.registrationLink.trim() === '') {
           toast.error('Please enter registration link');
           return false;
         }
-        
+
         // Outer College event specific validations
         if (registrationType === 'outer') {
           if (!formData.outerCollegeData) {
@@ -447,20 +458,20 @@ const CreateEvent = () => {
             return false;
           }
         }
-        
+
         // Department type validation
         if (!formData.departmentType) {
           toast.error('Please select department type');
           return false;
         }
-        
+
         // Event selection validation
         const totalEvents = formData.eventCategories.technical.length + formData.eventCategories.nonTechnical.length;
         if (totalEvents === 0) {
           toast.error('Please select at least one event');
           return false;
         }
-        
+
         // Platform-specific validations
         if (registrationType === 'platform') {
           if (formData.mode === 'Offline' && !formData.venue) {
@@ -472,7 +483,7 @@ const CreateEvent = () => {
             return false;
           }
         }
-        
+
         return true;
       case 2:
         // Only for platform registration
@@ -492,7 +503,7 @@ const CreateEvent = () => {
     if (validateStep(currentStep)) {
       const selectedEvents = getSelectedEvents();
       const totalSteps = getTotalSteps();
-      
+
       if (currentStep === 1 && selectedEvents.length > 0) {
         // Move to first event configuration page
         setCurrentStep(3);
@@ -507,7 +518,7 @@ const CreateEvent = () => {
 
   const handlePrevious = () => {
     const selectedEvents = getSelectedEvents();
-    
+
     if (currentStep === 3) {
       // Go back to step 1 from first event page
       setCurrentStep(1);
@@ -516,14 +527,14 @@ const CreateEvent = () => {
     }
   };
 
-  const handleSave = async () => {
+  const handleSave = async (publishEvent = false) => {
     if (!validateStep(currentStep)) return;
-    
+
     setIsLoading(true);
-    
+
     try {
       const formDataToSend = new FormData();
-      
+
       // Add all form fields
       Object.keys(formData).forEach(key => {
         if (key === 'eventCoordinator') {
@@ -535,10 +546,18 @@ const CreateEvent = () => {
           formDataToSend.append(key, formData[key]);
         } else if (typeof formData[key] === 'boolean') {
           formDataToSend.append(key, formData[key].toString());
+        } else if (key === 'isPublished') {
+          // Use publishEvent parameter to override isPublished value
+          formDataToSend.append(key, publishEvent.toString());
         } else {
           formDataToSend.append(key, formData[key]);
         }
       });
+
+      // Ensure isPublished is set if publishEvent is true
+      if (publishEvent) {
+        formDataToSend.set('isPublished', 'true');
+      }
 
       await api.post('/events', formDataToSend, {
         headers: {
@@ -549,7 +568,7 @@ const CreateEvent = () => {
       // Clear saved form data after successful submission
       localStorage.removeItem('createEventFormData');
       localStorage.removeItem('createEventRegistrationType');
-      
+
       toast.success('Event created successfully!');
       navigate('/admin/events');
     } catch (error) {
@@ -561,50 +580,44 @@ const CreateEvent = () => {
   };
 
   const handleSaveAndPublish = async () => {
-    setFormData(prev => ({ ...prev, isPublished: true }));
-    await handleSave();
+    await handleSave(true);
   };
 
   const renderStepIndicator = () => {
     const selectedEvents = getSelectedEvents();
     const totalSteps = getTotalSteps();
-    
+
     // Don't show step indicator for Outer College registration (only 1 step)
     if (registrationType === 'outer') {
       return null;
     }
-    
+
     return (
       <div className="flex items-center justify-center mb-8">
         <div className="flex items-center space-x-2">
           {/* Step 1 */}
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-            currentStep >= 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
-          }`}>
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${currentStep >= 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
+            }`}>
             1
           </div>
-          
+
           {/* Event steps */}
           {selectedEvents.map((event, index) => (
             <React.Fragment key={index}>
-              <div className={`w-16 h-1 ${
-                currentStep > 2 + index ? 'bg-blue-600' : 'bg-gray-200'
-              }`}></div>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
-                currentStep > 2 + index ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
-              }`}>
+              <div className={`w-16 h-1 ${currentStep > 2 + index ? 'bg-blue-600' : 'bg-gray-200'
+                }`}></div>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${currentStep > 2 + index ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
+                }`}>
                 {event.name.substring(0, 3).toUpperCase()}
               </div>
             </React.Fragment>
           ))}
-          
+
           {/* Summary step */}
-          <div className={`w-16 h-1 ${
-            currentStep === totalSteps ? 'bg-blue-600' : 'bg-gray-200'
-          }`}></div>
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-            currentStep === totalSteps ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
-          }`}>
+          <div className={`w-16 h-1 ${currentStep === totalSteps ? 'bg-blue-600' : 'bg-gray-200'
+            }`}></div>
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${currentStep === totalSteps ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
+            }`}>
             ✓
           </div>
         </div>
@@ -617,7 +630,7 @@ const CreateEvent = () => {
     const totalSteps = getTotalSteps();
     const currentEventName = getCurrentEventName();
     const currentEventType = getCurrentEventType();
-    
+
     // Event configuration pages
     if (currentStep > 2 && currentStep <= 2 + selectedEvents.length) {
       return (
@@ -634,7 +647,7 @@ const CreateEvent = () => {
         />
       );
     }
-    
+
     // Summary page
     if (currentStep === totalSteps) {
       return (
@@ -647,7 +660,7 @@ const CreateEvent = () => {
         />
       );
     }
-    
+
     // Default to step 1
     return renderStep1();
   };
@@ -655,7 +668,7 @@ const CreateEvent = () => {
   const renderStep1 = () => (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold text-gray-900 mb-6">Event Foundation</h2>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -751,7 +764,7 @@ const CreateEvent = () => {
                 />
                 <span className="text-sm font-medium text-gray-900">⬜ Technical</span>
               </label>
-              
+
               {formData.eventCategories.technical.length > 0 && (
                 <div className="ml-6">
                   <EventCategory
@@ -796,7 +809,7 @@ const CreateEvent = () => {
                 />
                 <span className="text-sm font-medium text-gray-900">⬜ Non-Technical</span>
               </label>
-              
+
               {formData.eventCategories.nonTechnical.length > 0 && (
                 <div className="ml-6">
                   <EventCategory
@@ -929,7 +942,7 @@ const CreateEvent = () => {
       {/* Additional Event Information */}
       <div className="space-y-6">
         <h3 className="text-lg font-medium text-gray-900">Event Details</h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Poster Upload */}
           <div className="md:col-span-2">
@@ -956,7 +969,7 @@ const CreateEvent = () => {
             </div>
           </div>
 
-          
+
 
           {/* Event Description */}
           <div className="md:col-span-2">
@@ -1039,7 +1052,7 @@ const CreateEvent = () => {
   const renderStep2 = () => (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold text-gray-900 mb-6">Event Info & Usability</h2>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="md:col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1158,8 +1171,8 @@ const CreateEvent = () => {
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Create New Event</h1>
               <p className="text-gray-600 mt-2">
-                {registrationType ? 
-                  `(${registrationType === 'outer' ? 'Outer College Event' : 'Platform'} Registration)` : 
+                {registrationType ?
+                  `(${registrationType === 'outer' ? 'Outer College Event' : 'Platform'} Registration)` :
                   'Fill in the details to create a new event'
                 }
               </p>

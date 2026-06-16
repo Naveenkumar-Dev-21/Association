@@ -2,20 +2,32 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const Event = require('../models/Event');
 const auth = require('../middleware/auth');
 
 const router = express.Router();
 
-// Configure multer for file uploads
+// Configure multer for file uploads with absolute paths
+const uploadsDir = path.join(__dirname, '../uploads');
+const postersDir = path.join(uploadsDir, 'posters');
+const brochuresDir = path.join(uploadsDir, 'brochures');
+
+// Ensure directories exist
+[uploadsDir, postersDir, brochuresDir].forEach(dir => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+});
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     if (file.fieldname === 'posterImage') {
-      cb(null, 'uploads/posters/');
+      cb(null, postersDir);
     } else if (file.fieldname === 'brochure') {
-      cb(null, 'uploads/brochures/');
+      cb(null, brochuresDir);
     } else {
-      cb(null, 'uploads/');
+      cb(null, uploadsDir);
     }
   },
   filename: function (req, file, cb) {
@@ -61,11 +73,11 @@ router.get('/public', async (req, res) => {
   try {
     const { category, type } = req.query;
     let filter = { isPublished: true };
-    
+
     if (category && category !== 'All') {
       filter.cellsAndAssociation = category;
     }
-    
+
     if (type && type !== 'All') {
       if (type === 'Outer College') {
         filter.isOuterCollegeEvent = true;
@@ -91,6 +103,33 @@ router.get('/public', async (req, res) => {
   }
 });
 
+// @route   GET /api/events/public/:id
+// @desc    Get single published event
+// @access  Public
+router.get('/public/:id', async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+
+    if (!event || !event.isPublished) {
+      return res.status(404).json({
+        success: false,
+        message: 'Event not found or not published'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: { event }
+    });
+  } catch (error) {
+    console.error('Get public event error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching event details'
+    });
+  }
+});
+
 // @route   GET /api/events
 // @desc    Get all events for a cells and association
 // @access  Private
@@ -98,16 +137,19 @@ router.get('/', auth, async (req, res) => {
   try {
     const { cellsAndAssociation, status } = req.query;
     let filter = {};
-    
-    // If not OT, restrict to their own association
-    if (req.admin.cellsAndAssociation !== 'OT') {
+
+    // Bypass filter for super_admin or 'OT' association
+    const isSuperAdmin = req.admin.role === 'super_admin';
+    const isOT = req.admin.cellsAndAssociation === 'OT';
+
+    if (!isSuperAdmin && !isOT) {
       filter.cellsAndAssociation = req.admin.cellsAndAssociation;
-    } else if (cellsAndAssociation && cellsAndAssociation !== 'ALL') {
-      // OT can filter by specific association
+    } else if (cellsAndAssociation && cellsAndAssociation !== 'ALL' && cellsAndAssociation !== 'all') {
+      // super_admin/OT can filter by specific association if they choose
       filter.cellsAndAssociation = cellsAndAssociation;
     }
-    
-    if (status) {
+
+    if (status && status !== 'all') {
       filter.status = status;
     }
 
@@ -144,7 +186,11 @@ router.get('/:id', auth, async (req, res) => {
     }
 
     // Check if admin has access to this event
-    if (event.createdBy._id.toString() !== req.admin._id.toString() && req.admin.role !== 'super_admin') {
+    const isSuperAdmin = req.admin.role === 'super_admin';
+    const isCreator = event.createdBy._id.toString() === req.admin._id.toString();
+    const sameAssociation = event.cellsAndAssociation === req.admin.cellsAndAssociation;
+
+    if (!isSuperAdmin && !isCreator && !sameAssociation) {
       return res.status(403).json({
         success: false,
         message: 'Access denied'
@@ -172,69 +218,100 @@ router.post('/', auth, upload.fields([
   { name: 'brochure', maxCount: 1 }
 ]), async (req, res) => {
   try {
-    const eventData = req.body;
-    const isOuterCollegeEvent = eventData.isOuterCollegeEvent === 'true' || eventData.isOuterCollegeEvent === true;
-    
-    // For outer college events, only poster is required
-    if (isOuterCollegeEvent) {
-      if (!req.files || !req.files.posterImage) {
-        return res.status(400).json({
-          success: false,
-          message: 'Poster image is required for outer college events'
-        });
+    const body = req.body;
+    const isOuterCollegeEvent = body.isOuterCollegeEvent === 'true' || body.isOuterCollegeEvent === true;
+
+    // Smartly derive cellsAndAssociation from organizingBody mapping
+    let derivedAssociation = body.cellsAndAssociation || req.admin.cellsAndAssociation || 'IT';
+    const orgBody = body.organizingBody?.toUpperCase().trim();
+
+    // Explicit mapping for all common variants
+    if (orgBody) {
+      if (orgBody.includes('IIC') || orgBody.includes('INNOVATION')) {
+        derivedAssociation = 'IIC';
+      } else if (orgBody.includes('EMDC') || orgBody.includes('ENTREPRENEUR')) {
+        derivedAssociation = 'EMDC';
+      } else if (orgBody.includes('IT') || orgBody.includes('INFORMATION')) {
+        derivedAssociation = 'IT';
       }
-    } else {
-      // Validate required fields for regular events
-      const requiredFields = ['name', 'organizingBody', 'eventDate', 'description', 'rules'];
+    }
+
+    // Robust field mapping for nested objects sent via FormData
+    const eventData = {
+      name: body.name || (isOuterCollegeEvent ? 'Outer College Event' : ''),
+      organizingBody: body.organizingBody || (isOuterCollegeEvent ? 'External' : ''),
+      description: body.description || 'See poster for details',
+      rules: body.rules || 'See poster for details',
+      mode: body.mode || 'Offline',
+      venue: body.venue || (body.mode === 'Offline' ? '' : 'Online'),
+      cellsAndAssociation: derivedAssociation,
+      eventLink: body.eventLink || '',
+      whatsappGroupLink: body.whatsappGroupLink || '',
+      registrationLink: body.registrationLink || '#',
+      isOuterCollegeEvent,
+      hostCollegeName: body.hostCollegeName || null,
+      externalEventLink: body.externalEventLink || null,
+      status: body.status || 'Upcoming',
+      isPublished: body.isPublished === 'true' || body.isPublished === true,
+      createdBy: req.admin._id,
+      eventCoordinator: {
+        name: body['eventCoordinator.name'] ||
+          (body.eventCoordinator && body.eventCoordinator.name) ||
+          body['eventCoordinator[name]'] || 'TBD',
+        contact: body['eventCoordinator.contact'] ||
+          (body.eventCoordinator && body.eventCoordinator.contact) ||
+          body['eventCoordinator[contact]'] || 'N/A'
+      }
+    };
+
+    // Validation
+    if (!isOuterCollegeEvent) {
+      const requiredFields = ['name', 'organizingBody', 'description', 'rules'];
       for (const field of requiredFields) {
-        if (!eventData[field] || (typeof eventData[field] === 'string' && !eventData[field].trim())) {
-          return res.status(400).json({
-            success: false,
-            message: `${field} is required`
-          });
+        if (!eventData[field] || eventData[field].trim() === '') {
+          return res.status(400).json({ success: false, message: `${field} is required` });
         }
       }
     }
 
-    // Add file paths if uploaded
-    if (req.files && req.files.posterImage) {
-      eventData.posterImage = `/uploads/posters/${req.files.posterImage[0].filename}`;
-    }
-    
-    if (req.files && req.files.brochure) {
-      eventData.brochure = `/uploads/brochures/${req.files.brochure[0].filename}`;
-    }
-
-    // Parse arrays and numbers
-    if (typeof eventData.eventType === 'string') {
-      try {
-        eventData.eventType = JSON.parse(eventData.eventType);
-      } catch (e) {
-        eventData.eventType = [eventData.eventType];
+    // Handle files
+    if (req.files) {
+      if (req.files.posterImage) {
+        eventData.posterImage = `/uploads/posters/${req.files.posterImage[0].filename}`;
+      }
+      if (req.files.brochure) {
+        eventData.brochure = `/uploads/brochures/${req.files.brochure[0].filename}`;
       }
     }
-    if (eventData.maxParticipants) {
-      eventData.maxParticipants = parseInt(eventData.maxParticipants);
+
+    // Parse numeric/date fields safely
+    if (body.maxParticipants && body.maxParticipants !== '') {
+      const max = parseInt(body.maxParticipants);
+      eventData.maxParticipants = isNaN(max) ? 100 : max;
     } else {
-      eventData.maxParticipants = 100; // Default for outer college
+      eventData.maxParticipants = 100;
     }
-    if (eventData.eventDate) {
-      eventData.eventDate = new Date(eventData.eventDate);
+
+    if (body.eventDate) {
+      eventData.eventDate = new Date(body.eventDate);
     }
-    if (eventData.registrationEndDate) {
-      eventData.registrationEndDate = new Date(eventData.registrationEndDate);
+
+    // registrationEndDate in model is String but client sends Date
+    if (body.registrationEndDate) {
+      eventData.registrationEndDate = body.registrationEndDate;
     }
-    eventData.createdBy = req.admin._id;
-    
-    // For outer college events, set the flag and auto-publish
-    if (isOuterCollegeEvent) {
-      eventData.isOuterCollegeEvent = true;
-      eventData.isPublished = true;
-    }
-    
-    // Handle isPublished field
-    if (eventData.isPublished === 'true' || eventData.isPublished === true) {
-      eventData.isPublished = true;
+
+    // Handle eventType array
+    if (body.eventType) {
+      if (typeof body.eventType === 'string') {
+        try {
+          eventData.eventType = JSON.parse(body.eventType);
+        } catch (e) {
+          eventData.eventType = [body.eventType];
+        }
+      } else if (Array.isArray(body.eventType)) {
+        eventData.eventType = body.eventType;
+      }
     }
 
     const event = new Event(eventData);
@@ -246,7 +323,7 @@ router.post('/', auth, upload.fields([
       data: { event }
     });
   } catch (error) {
-    console.error('Create event error:', error);
+    console.error('[CRITICAL] Create event error:', error);
     res.status(500).json({
       success: false,
       message: error.message || 'Server error while creating event'
@@ -280,12 +357,12 @@ router.put('/:id', auth, upload.fields([
     }
 
     const updateData = req.body;
-    
+
     // Add file paths if uploaded
     if (req.files.posterImage) {
       updateData.posterImage = `/uploads/posters/${req.files.posterImage[0].filename}`;
     }
-    
+
     if (req.files.brochure) {
       updateData.brochure = `/uploads/brochures/${req.files.brochure[0].filename}`;
     }
@@ -354,7 +431,7 @@ router.get('/:id/export', auth, async (req, res) => {
     if (event.isOuterCollegeEvent) {
       const OuterCollegeRegistration = require('../models/OuterCollegeRegistration');
       registrations = await OuterCollegeRegistration.find({ eventId: req.params.id });
-      
+
       csvHeaders = ['S.No', 'Participant Name', 'Roll Number', 'Department', 'Year of Study', 'Contact Number', 'Email', 'Mode', 'Status', 'Registration Date'];
       csvRows = registrations.map((reg, index) => [
         index + 1,
@@ -371,7 +448,7 @@ router.get('/:id/export', auth, async (req, res) => {
     } else {
       const Registration = require('../models/Registration');
       registrations = await Registration.find({ event: req.params.id });
-      
+
       csvHeaders = ['S.No', 'Student Name', 'Email', 'Phone', 'Year', 'Status', 'Registration Date'];
       csvRows = registrations.map((reg, index) => [
         index + 1,
@@ -402,7 +479,7 @@ router.get('/:id/export', auth, async (req, res) => {
     // Set response headers for CSV download
     res.setHeader('Content-Type', 'text/csv');
     res.setHeader('Content-Disposition', `attachment; filename="${event.name.replace(/[^a-z0-9]/gi, '_')}_registrations.csv"`);
-    
+
     res.send(csvContent);
   } catch (error) {
     console.error('Export event registrations error:', error);

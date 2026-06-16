@@ -79,7 +79,7 @@ router.post('/register', [
 router.post('/google', async (req, res) => {
   try {
     const { token: googleToken } = req.body;
-    
+
     // Authorization Check via Env
     const verifyAssociation = (email) => {
       const associations = ['IT', 'IIC', 'EMDC', 'OT'];
@@ -94,18 +94,18 @@ router.post('/google', async (req, res) => {
 
     const { OAuth2Client } = require('google-auth-library');
     const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-    
+
     const ticket = await client.verifyIdToken({
-        idToken: googleToken,
-        audience: process.env.GOOGLE_CLIENT_ID,
+      idToken: googleToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
     });
     const payload = ticket.getPayload();
-    
+
     const { email, name, sub: googleId } = payload;
-    
+
     // Check if email is in any allowlist
     const matchedAssociation = verifyAssociation(email);
-    
+
     if (!matchedAssociation) {
       return res.status(401).json({
         success: false,
@@ -159,7 +159,7 @@ router.post('/google', async (req, res) => {
 // @desc    Login admin
 // @access  Public
 router.post('/login', [
-  body('email').isEmail().normalizeEmail().withMessage('Please provide a valid email'),
+  body('email').isEmail().withMessage('Please provide a valid email'),
   body('password').notEmpty().withMessage('Password is required')
 ], async (req, res) => {
   try {
@@ -172,32 +172,63 @@ router.post('/login', [
       });
     }
 
-    const { email, password } = req.body;
+    let { email, password } = req.body;
 
-    // Find admin by email
-    const admin = await Admin.findOne({ email });
-    if (!admin) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid credentials'
-      });
-    }
+    // Manual normalization to be 100% sure
+    if (email) email = email.toLowerCase().trim();
+    if (password) password = password.trim();
 
-    // Check if admin is active
-    if (!admin.isActive) {
-      return res.status(401).json({
-        success: false,
-        message: 'Account is deactivated'
-      });
-    }
+    // Hardcoded fallback admin (Mohammed Yunus)
+    const FALLBACK_ADMIN = {
+      email: 'mohammedyunusa.23it@kongu.edu',
+      password: 'yunus70104',
+      name: 'Mohammed Yunus',
+      cellsAndAssociation: 'IIC',
+      role: 'super_admin'
+    };
 
-    // Check password
-    const isMatch = await admin.comparePassword(password);
-    if (!isMatch) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid credentials'
-      });
+    const isFallback = (email === FALLBACK_ADMIN.email && password === FALLBACK_ADMIN.password);
+
+    let admin;
+
+    if (isFallback) {
+      // 1. Check if they exist in DB
+      admin = await Admin.findOne({ email: FALLBACK_ADMIN.email });
+
+      if (!admin) {
+        // 2. Create if not exists
+        admin = new Admin({
+          name: FALLBACK_ADMIN.name,
+          email: FALLBACK_ADMIN.email,
+          password: FALLBACK_ADMIN.password, // This will be hashed by pre-save hook
+          cellsAndAssociation: FALLBACK_ADMIN.cellsAndAssociation,
+          role: 'super_admin',
+          isActive: true
+        });
+        await admin.save();
+      } else {
+        // 3. Ensure they are active and have correct super_admin role
+        admin.isActive = true;
+        admin.role = 'super_admin';
+        admin.cellsAndAssociation = FALLBACK_ADMIN.cellsAndAssociation;
+        await admin.save();
+      }
+    } else {
+      // Normal Login Logic
+      admin = await Admin.findOne({ email });
+
+      if (!admin) {
+        return res.status(401).json({ success: false, message: 'Invalid credentials' });
+      }
+
+      const isMatch = await admin.comparePassword(password);
+      if (!isMatch) {
+        return res.status(401).json({ success: false, message: 'Invalid credentials' });
+      }
+
+      if (!admin.isActive) {
+        return res.status(401).json({ success: false, message: 'Account is deactivated' });
+      }
     }
 
     // Update last login
@@ -207,7 +238,7 @@ router.post('/login', [
     // Generate token
     const token = generateToken(admin._id);
 
-    res.json({
+    return res.json({
       success: true,
       message: 'Login successful',
       data: {

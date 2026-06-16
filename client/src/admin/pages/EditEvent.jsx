@@ -81,7 +81,8 @@ const EditEvent = () => {
       
       // Set poster preview if exists
       if (event.posterImage) {
-        setPosterPreview(`http://localhost:5000${event.posterImage}`);
+        const baseUrl = window.location.origin === 'http://localhost:3000' ? 'http://localhost:5000' : window.location.origin;
+        setPosterPreview(`${baseUrl}${event.posterImage}`);
       }
     } catch (error) {
       console.error('Error fetching event:', error);

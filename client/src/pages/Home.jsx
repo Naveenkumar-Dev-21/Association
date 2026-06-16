@@ -14,6 +14,7 @@ const API_URL = '/api';
 
 const Home = () => {
     const [upcomingEvents, setUpcomingEvents] = useState([]);
+    const [groupedEvents, setGroupedEvents] = useState({ IIC: [], EMDC: [], IT: [] });
     const [isLoading, setIsLoading] = useState(true);
     const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -28,6 +29,14 @@ const Home = () => {
                         event => !event.isOuterCollegeEvent
                     );
                     setUpcomingEvents(insideCollegeEvents);
+
+                    // Group events by association for dynamic display
+                    const grouped = {
+                        IIC: insideCollegeEvents.filter(e => e.cellsAndAssociation === 'IIC'),
+                        EMDC: insideCollegeEvents.filter(e => e.cellsAndAssociation === 'EMDC'),
+                        IT: insideCollegeEvents.filter(e => e.cellsAndAssociation === 'IT')
+                    };
+                    setGroupedEvents(grouped);
                 }
             } catch (error) {
                 console.error('Error fetching events:', error);
@@ -192,7 +201,7 @@ const Home = () => {
                                                 <h4 className="text-3xl font-bold text-slate-900 mb-4">
                                                     {upcomingEvents[currentSlide]?.name}
                                                 </h4>
-                                                
+
                                                 <div className="space-y-3 mb-6">
                                                     <div className="flex items-center text-slate-600">
                                                         <Calendar className="w-5 h-5 mr-3 text-blue-600" />
@@ -218,7 +227,7 @@ const Home = () => {
                                                     </p>
                                                 )}
 
-                                                <Link to="/events">
+                                                <Link to={`/events/${upcomingEvents[currentSlide]?._id}`}>
                                                     <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3 rounded-xl">
                                                         View Details
                                                     </Button>
@@ -254,11 +263,10 @@ const Home = () => {
                                         <button
                                             key={idx}
                                             onClick={() => setCurrentSlide(idx)}
-                                            className={`w-3 h-3 rounded-full transition-all ${
-                                                idx === currentSlide 
-                                                    ? 'bg-blue-600 w-8' 
-                                                    : 'bg-slate-300 hover:bg-slate-400'
-                                            }`}
+                                            className={`w-3 h-3 rounded-full transition-all ${idx === currentSlide
+                                                ? 'bg-blue-600 w-8'
+                                                : 'bg-slate-300 hover:bg-slate-400'
+                                                }`}
                                         />
                                     ))}
                                 </div>
@@ -353,8 +361,9 @@ const Home = () => {
                                 title: "Institution's Innovation Council",
                                 icon: Lightbulb,
                                 desc: "Cultivating a culture of innovation and creating a vibrant startup ecosystem among the students.",
-                                link: "/about#iic",
-                                accent: "bg-blue-600"
+                                link: "/events/iic",
+                                accent: "bg-blue-600",
+                                events: groupedEvents.IIC
                             },
                             {
                                 id: 'emdc',
@@ -362,17 +371,19 @@ const Home = () => {
                                 title: "Entrepreneurship Development Center",
                                 icon: TrendingUp,
                                 desc: "Nurturing entrepreneurial spirit and providing professional management skills for future leaders.",
-                                link: "/about#emdc",
-                                accent: "bg-slate-800"
+                                link: "/events/emdc",
+                                accent: "bg-slate-800",
+                                events: groupedEvents.EMDC
                             },
                             {
-                                id: 'asoc',
+                                id: 'it',
                                 name: "IT Association",
                                 title: "Student Welfare & Socials",
                                 icon: Users,
                                 desc: "The central student body managing technical symposiums, workshops, and extracurricular department flow.",
-                                link: "/about#association",
-                                accent: "bg-blue-800"
+                                link: "/events/it",
+                                accent: "bg-blue-800",
+                                events: groupedEvents.IT
                             }
                         ].map((body, idx) => (
                             <motion.div
@@ -386,13 +397,43 @@ const Home = () => {
                                 <div className={`w-12 h-12 ${body.accent} rounded-2xl flex items-center justify-center text-white mb-8 group-hover:scale-110 transition-transform`}>
                                     <body.icon size={24} />
                                 </div>
-                                <h4 className="text-sm font-black text-blue-600 uppercase tracking-[0.2em] mb-2">{body.name}</h4>
+                                <h4 className="text-sm font-black text-blue-600 uppercase tracking-[0.2em] mb-2">
+                                    {body.name}
+                                    {body.events?.length > 0 && (
+                                        <span className="ml-2 animate-pulse bg-red-500 text-white text-[8px] px-1.5 py-0.5 rounded-full align-middle">LIVE</span>
+                                    )}
+                                </h4>
                                 <h5 className="text-2xl font-bold text-slate-900 mb-4 tracking-tight leading-tight">{body.title}</h5>
-                                <p className="text-slate-600 text-sm leading-relaxed mb-10">
+                                <p className="text-slate-600 text-sm leading-relaxed mb-6">
                                     {body.desc}
                                 </p>
-                                <Link to={body.link} className="inline-flex items-center text-slate-900 font-bold text-[10px] uppercase tracking-widest group/link">
-                                    Learn More <ChevronRight size={14} className="ml-1 group-hover/link:translate-x-1 transition-transform" />
+
+                                {body.events?.length > 0 && (
+                                    <Link to={`/events/${body.events[0]._id}`} className="block mb-8 group/event">
+                                        <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-center gap-4 group-hover/event:bg-blue-50/50 group-hover/event:border-blue-100 transition-all">
+                                            <div className="w-12 h-12 rounded-xl bg-white flex-shrink-0 overflow-hidden border border-slate-200 shadow-sm">
+                                                {body.events[0].posterImage ? (
+                                                    <img src={`http://localhost:5000${body.events[0].posterImage}`} className="w-full h-full object-cover" alt="" />
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center bg-blue-50 text-[10px] font-bold text-blue-400 uppercase tracking-tighter">Event</div>
+                                                )}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center gap-2 mb-0.5">
+                                                    <p className="text-[10px] font-bold text-blue-600 uppercase tracking-tight font-sans">Upcoming</p>
+                                                    <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[8px] font-black uppercase tracking-widest font-sans">
+                                                        {body.events[0].cellsAndAssociation === 'IT' ? 'IT Association' : body.events[0].cellsAndAssociation}
+                                                    </span>
+                                                </div>
+                                                <p className="text-xs font-bold text-slate-800 truncate font-sans group-hover/event:text-blue-600 transition-colors">{body.events[0].name}</p>
+                                                <p className="text-[9px] text-slate-500 font-sans">{formatDate(body.events[0].eventDate)}</p>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                )}
+
+                                <Link to={body.link} className="inline-flex items-center text-blue-600 font-black text-[10px] uppercase tracking-widest group/link">
+                                    {body.events?.length > 0 ? `Explore ${body.events.length} Events` : 'Explore Body'} <ChevronRight size={14} className="ml-1 group-hover/link:translate-x-1 transition-transform" />
                                 </Link>
                             </motion.div>
                         ))}

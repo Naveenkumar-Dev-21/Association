@@ -24,7 +24,7 @@ api.interceptors.request.use(
 );
 
 // TESTING MODE - Set to true to bypass authentication redirects
-const TESTING_MODE = true;
+const TESTING_MODE = false;
 
 // Handle token expiration
 api.interceptors.response.use(
